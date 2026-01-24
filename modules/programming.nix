@@ -1,0 +1,27 @@
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
+{
+  environment.systemPackages = with pkgs; [
+    neovim
+    lazygit
+    git
+    gh
+    claude-code
+    claude-monitor
+    vscodium-fhs
+    python3
+    pipx
+    rustc
+    cargo
+    cargo-ui
+    nodejs_24
+    rust-analyzer
+    marp-cli
+    markdownlint-cli
+    markdownlint-cli2
+  ];
+}
