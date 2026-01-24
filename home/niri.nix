@@ -33,6 +33,10 @@
   gtk = {
     enable = true;
     theme.name = "Adwaita-dark";
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
     gtk3.extraConfig = {
       gtk-decoration-layout = "";
     };
@@ -494,6 +498,18 @@
         padding: 4px;
       }
     '';
+  };
+
+  # Gammastep for night light
+  services.gammastep = {
+    enable = true;
+    dawnTime = "08:00";
+    duskTime = "20:00";
+    temperature = {
+      day = 6500;
+      night = 3500;
+    };
+    tray = true;
   };
 
   # Mako notification daemon
