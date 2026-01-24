@@ -15,6 +15,9 @@
     ./websites.nix
     # Shared modules
     ../../modules/programming.nix
+    # Desktop environments (both available, choose at login)
+    ../../modules/desktop/gnome.nix
+    ../../modules/desktop/niri.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -52,27 +55,7 @@
     LC_TIME = "en_GB.UTF-8";
   };
 
-  services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-  services.xserver.xkb = {
-    layout = "gb";
-    variant = "mac";
-  };
-
-  console.keyMap = "uk";
-
   services.printing.enable = true;
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    #jack.enable = true;
-    #media-session.enable = true;
-  };
 
   # NOTE: SERVERS
   # Wiki.js
@@ -198,7 +181,6 @@
     packages = with pkgs; [
     ];
   };
-  programs.gpaste.enable = true;
   programs.firefox.enable = true;
   programs.steam.enable = true;
   nixpkgs.config.allowUnfree = true;
@@ -209,40 +191,22 @@
     "flakes"
   ];
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.fira-code
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.iosevka
-    nerd-fonts.iosevka-term
-  ];
-
   # NOTE: SOFTWARE
-  services.gnome.gnome-settings-daemon.enable = true;
   environment.systemPackages = with pkgs; [
     protonmail-desktop
     wget
     jq
-    gtk-engine-murrine
-    sassc
-    gnome-themes-extra
-    ocs-url
-    libnotify
     mat2
     ungoogled-chromium
     fd
     ripgrep
     bitwarden-desktop
     localsend
-    alacritty
-    wofi
     libation
-    gnome-tweaks
-    yazi
     exiftool
     lunar-client
     wakatime-cli
     obs-studio
-    cliphist
     mpd-mpris
     zellij
     kdePackages.kdenlive
@@ -258,7 +222,6 @@
     joplin-desktop
     runelite
     xclip
-    wl-clipboard
     plex-desktop
     yt-dlp
     freetube
