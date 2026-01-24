@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 # Rose Pine Moon colors:
 # base:     #232136
@@ -57,6 +62,8 @@
       mouse {
         accel-speed 0.0
       }
+
+      focus-follows-mouse
     }
 
     // Output/display configuration
@@ -89,6 +96,7 @@
     }
 
     // Spawn at startup
+    spawn-at-startup "xwayland-satellite"
     spawn-at-startup "waybar"
     spawn-at-startup "mako"
     spawn-at-startup "swww-daemon"
@@ -98,8 +106,8 @@
 
     // Cursor
     cursor {
-      xcursor-theme "Adwaita"
-      xcursor-size 24
+      xcursor-theme "taiga-cursor"
+      xcursor-size 35
     }
 
     // Prefer server-side decorations
@@ -110,7 +118,7 @@
 
     // Window rules
     window-rule {
-      geometry-corner-radius 8
+      geometry-corner-radius 0
       clip-to-geometry true
     }
 
@@ -233,9 +241,19 @@
         height = 24;
         spacing = 8;
 
-        modules-left = [ "niri/workspaces" "niri/window" ];
+        modules-left = [
+          "niri/workspaces"
+          "niri/window"
+        ];
         modules-center = [ "clock" ];
-        modules-right = [ "mpris" "pulseaudio" "network" "battery" "tray" "custom/power" ];
+        modules-right = [
+          "mpris"
+          "pulseaudio"
+          "network"
+          "battery"
+          "tray"
+          "custom/power"
+        ];
 
         "niri/workspaces" = {
           format = "{index}";
@@ -257,7 +275,11 @@
           format = "{icon} {volume}%";
           format-muted = " muted";
           format-icons = {
-            default = [ "" "" "" ];
+            default = [
+              ""
+              ""
+              ""
+            ];
           };
           on-click = "pavucontrol";
         };
@@ -272,7 +294,13 @@
         battery = {
           format = "{icon} {capacity}%";
           format-charging = " {capacity}%";
-          format-icons = [ "" "" "" "" "" ];
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
         };
 
         tray = {
@@ -317,13 +345,13 @@
       window#waybar > box {
         margin: 4px 12px 0 12px;
         background-color: rgba(35, 33, 54, 0.85);
-        border-radius: 10px;
+        border-radius: 0;
         padding: 2px 6px;
       }
 
       #workspaces {
         background-color: #2a273f;
-        border-radius: 8px;
+        border-radius: 0;
         margin: 2px 4px;
         padding: 0 2px;
       }
@@ -334,7 +362,7 @@
         color: #6e6a86;
         background: transparent;
         border: none;
-        border-radius: 8px;
+        border-radius: 0;
         transition: all 0.2s ease;
       }
 
@@ -359,7 +387,7 @@
         color: #e0def4;
         font-weight: bold;
         background-color: #2a273f;
-        border-radius: 8px;
+        border-radius: 0;
         padding: 2px 12px;
         margin: 2px 4px;
       }
@@ -369,7 +397,7 @@
       #battery,
       #tray {
         background-color: #2a273f;
-        border-radius: 8px;
+        border-radius: 0;
         padding: 2px 10px;
         margin: 2px 4px;
         transition: all 0.2s ease;
@@ -429,7 +457,7 @@
 
       #mpris {
         background-color: #2a273f;
-        border-radius: 8px;
+        border-radius: 0;
         padding: 2px 10px;
         margin: 2px 4px;
         color: #c4a7e7;
@@ -445,7 +473,7 @@
 
       #custom-power {
         background-color: #2a273f;
-        border-radius: 8px;
+        border-radius: 0;
         padding: 2px 10px;
         margin: 2px 4px;
         color: #eb6f92;
@@ -458,7 +486,7 @@
       tooltip {
         background-color: #232136;
         border: 2px solid #c4a7e7;
-        border-radius: 8px;
+        border-radius: 0;
       }
 
       tooltip label {
@@ -474,7 +502,7 @@
     backgroundColor = "#232136";
     textColor = "#e0def4";
     borderColor = "#c4a7e7";
-    borderRadius = 8;
+    borderRadius = 0;
     borderSize = 2;
     defaultTimeout = 5000;
     font = "JetBrainsMono Nerd Font 11";
@@ -574,9 +602,92 @@
     '';
   };
 
+  # Wofi config
+  xdg.configFile."wofi/config".text = ''
+    width=500
+    height=300
+    location=center
+    show=drun
+    prompt=
+    filter_rate=100
+    allow_markup=true
+    no_actions=true
+    halign=fill
+    orientation=vertical
+    content_halign=fill
+    insensitive=true
+    allow_images=true
+    image_size=24
+    gtk_dark=true
+    layer=overlay
+    matching=fuzzy
+  '';
+
+  xdg.configFile."wofi/style.css".text = ''
+    window {
+      margin: 0;
+      background-color: #232136;
+      border: 2px solid #c4a7e7;
+      color: #e0def4;
+      font-family: "JetBrainsMono Nerd Font", monospace;
+      font-size: 14px;
+    }
+
+    #input {
+      margin: 8px;
+      border: none;
+      border-bottom: 2px solid #c4a7e7;
+      color: #e0def4;
+      background-color: #2a273f;
+      padding: 8px;
+    }
+
+    #inner-box {
+      margin: 4px 8px;
+      border: none;
+      background-color: transparent;
+    }
+
+    #outer-box {
+      margin: 0;
+      border: none;
+      background-color: transparent;
+    }
+
+    #scroll {
+      margin: 0;
+      border: none;
+    }
+
+    #text {
+      margin: 4px;
+      border: none;
+      color: #e0def4;
+    }
+
+    #entry {
+      padding: 4px;
+    }
+
+    #entry:selected {
+      background-color: #c4a7e7;
+      color: #232136;
+    }
+
+    #entry:selected #text {
+      color: #232136;
+    }
+
+    #img {
+      margin-right: 8px;
+    }
+  '';
+
   # Force overwrite existing config files
   xdg.configFile."waybar/config".force = true;
   xdg.configFile."waybar/style.css".force = true;
   xdg.configFile."mako/config".force = true;
+  xdg.configFile."wofi/config".force = true;
+  xdg.configFile."wofi/style.css".force = true;
 
 }

@@ -12,6 +12,9 @@
   # Enable Niri compositor
   programs.niri.enable = true;
 
+  # Enable XWayland for X11 apps (Steam, games, etc.)
+  programs.xwayland.enable = true;
+
   # XDG portal for screen sharing, file dialogs, etc.
   xdg.portal = {
     enable = true;
@@ -35,12 +38,16 @@
     NIXOS_OZONE_WL = "1";
     MOZ_ENABLE_WAYLAND = "1";
     QT_QPA_PLATFORM = "wayland";
-    SDL_VIDEODRIVER = "wayland";
+    # Don't force SDL to wayland - breaks Steam and many games
+    # SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
   # Niri packages
   environment.systemPackages = with pkgs; [
+    # XWayland for X11 apps
+    xwayland-satellite
+
     # Status bar
     waybar
 
