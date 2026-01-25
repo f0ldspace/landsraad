@@ -1,0 +1,4 @@
+hosts/caladan
+modules/media-server-core.nix
+modules/media-server-extended.nix
+modules/restic-backups.nix

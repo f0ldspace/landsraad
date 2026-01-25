@@ -209,7 +209,6 @@
     obs-studio
     mpd-mpris
     zellij
-    kdePackages.kdenlive
     bleachbit
     protonvpn-gui
     ffmpegthumbnailer

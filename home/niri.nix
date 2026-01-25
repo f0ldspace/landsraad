@@ -294,7 +294,7 @@
 
         network = {
           format-wifi = " {signalStrength}%";
-          format-ethernet = " [x]";
+          format-ethernet = "[x]";
           format-disconnected = " disconnected";
           tooltip-format = "{ifname}: {ipaddr}";
         };
