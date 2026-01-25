@@ -110,8 +110,8 @@
 
     // Cursor
     cursor {
-      xcursor-theme "taiga-cursor"
-      xcursor-size 35
+      xcursor-theme "Adwaita"
+      xcursor-size 25
     }
 
     // Prefer server-side decorations
@@ -139,7 +139,7 @@
       open-floating true
     }
 
-    // Keybindings
+       // Keybindings
     binds {
       // Mod = Super/Logo key
       Mod+T { spawn "alacritty"; }
@@ -150,13 +150,13 @@
 
       // Vim-style navigation
       Mod+H { focus-column-left; }
-      Mod+J { focus-window-down; }
-      Mod+K { focus-window-up; }
+      Mod+J { focus-workspace-down; }
+      Mod+K { focus-workspace-up; }
       Mod+L { focus-column-right; }
 
       Mod+Shift+H { move-column-left; }
-      Mod+Shift+J { move-window-down; }
-      Mod+Shift+K { move-window-up; }
+      Mod+Shift+J { move-window-to-workspace-down; }
+      Mod+Shift+K { move-window-to-workspace-up; }
       Mod+Shift+L { move-column-right; }
 
       // Arrow key navigation
@@ -195,7 +195,11 @@
       Mod+F { maximize-column; }
       Mod+Shift+F { fullscreen-window; }
       Mod+Minus { set-column-width "-10%"; }
-      Mod+Equal { set-column-width "+10%"; }
+      Mod+Apostrophe { set-column-width "+10%"; }
+
+      // Column management (vertical stacking)
+      Mod+C { consume-window-into-column; }
+      Mod+Shift+C { expel-window-from-column; }
 
       // Floating
       Mod+Space { toggle-window-floating; }
@@ -270,8 +274,8 @@
         };
 
         clock = {
-          format = "{:%H:%M}";
-          format-alt = "{:%Y-%m-%d %H:%M}";
+          format = "{:%Y-%m-%d %H:%M}";
+          format-alt = "{:%H:%M}";
           tooltip-format = "<tt><small>{calendar}</small></tt>";
         };
 
@@ -290,7 +294,7 @@
 
         network = {
           format-wifi = " {signalStrength}%";
-          format-ethernet = " connected";
+          format-ethernet = " [x]";
           format-disconnected = " disconnected";
           tooltip-format = "{ifname}: {ipaddr}";
         };
@@ -507,7 +511,7 @@
     duskTime = "20:00";
     temperature = {
       day = 6500;
-      night = 3500;
+      night = 2500;
     };
     tray = true;
   };
