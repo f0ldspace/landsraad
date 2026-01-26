@@ -274,7 +274,7 @@
         };
 
         clock = {
-          format = "{:%Y-%m-%d %H:%M}";
+          format = "{:%H:%M, %a, %d-%m-%y}";
           format-alt = "{:%H:%M}";
           tooltip-format = "<tt><small>{calendar}</small></tt>";
         };
@@ -709,5 +709,133 @@
   xdg.configFile."mako/config".force = true;
   xdg.configFile."wofi/config".force = true;
   xdg.configFile."wofi/style.css".force = true;
+
+  # Yazi file manager with Rose Pine Moon
+  programs.yazi = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    settings = {
+      manager = {
+        show_hidden = true;
+        sort_by = "natural";
+        sort_dir_first = true;
+        linemode = "size";
+      };
+    };
+    theme = {
+      manager = {
+        cwd = { fg = "#9ccfd8"; };
+        hovered = { fg = "#232136"; bg = "#c4a7e7"; };
+        preview_hovered = { underline = true; };
+        find_keyword = { fg = "#f6c177"; bold = true; };
+        find_position = { fg = "#ea9a97"; bg = "reset"; bold = true; };
+        marker_copied = { fg = "#9ccfd8"; bg = "#9ccfd8"; };
+        marker_cut = { fg = "#eb6f92"; bg = "#eb6f92"; };
+        marker_selected = { fg = "#c4a7e7"; bg = "#c4a7e7"; };
+        tab_active = { fg = "#232136"; bg = "#c4a7e7"; };
+        tab_inactive = { fg = "#e0def4"; bg = "#2a273f"; };
+        tab_width = 1;
+        border_symbol = "│";
+        border_style = { fg = "#393552"; };
+        count_copied = { fg = "#232136"; bg = "#9ccfd8"; };
+        count_cut = { fg = "#232136"; bg = "#eb6f92"; };
+        count_selected = { fg = "#232136"; bg = "#c4a7e7"; };
+      };
+      status = {
+        separator_open = "";
+        separator_close = "";
+        separator_style = { fg = "#2a273f"; bg = "#2a273f"; };
+        mode_normal = { fg = "#232136"; bg = "#c4a7e7"; bold = true; };
+        mode_select = { fg = "#232136"; bg = "#9ccfd8"; bold = true; };
+        mode_unset = { fg = "#232136"; bg = "#eb6f92"; bold = true; };
+        progress_label = { fg = "#e0def4"; bold = true; };
+        progress_normal = { fg = "#393552"; bg = "#2a273f"; };
+        progress_error = { fg = "#eb6f92"; bg = "#2a273f"; };
+        permissions_t = { fg = "#9ccfd8"; };
+        permissions_r = { fg = "#f6c177"; };
+        permissions_w = { fg = "#eb6f92"; };
+        permissions_x = { fg = "#9ccfd8"; };
+        permissions_s = { fg = "#6e6a86"; };
+      };
+      input = {
+        border = { fg = "#c4a7e7"; };
+        title = { };
+        value = { };
+        selected = { reversed = true; };
+      };
+      select = {
+        border = { fg = "#c4a7e7"; };
+        active = { fg = "#ea9a97"; };
+        inactive = { };
+      };
+      tasks = {
+        border = { fg = "#c4a7e7"; };
+        title = { };
+        hovered = { underline = true; };
+      };
+      which = {
+        mask = { bg = "#2a273f"; };
+        cand = { fg = "#9ccfd8"; };
+        rest = { fg = "#6e6a86"; };
+        desc = { fg = "#ea9a97"; };
+        separator = "  ";
+        separator_style = { fg = "#393552"; };
+      };
+      help = {
+        on = { fg = "#ea9a97"; };
+        run = { fg = "#9ccfd8"; };
+        desc = { fg = "#6e6a86"; };
+        hovered = { bg = "#393552"; bold = true; };
+        footer = { fg = "#e0def4"; bg = "#2a273f"; };
+      };
+      filetype = {
+        rules = [
+          { mime = "image/*"; fg = "#9ccfd8"; }
+          { mime = "video/*"; fg = "#f6c177"; }
+          { mime = "audio/*"; fg = "#f6c177"; }
+          { mime = "application/zip"; fg = "#ea9a97"; }
+          { mime = "application/gzip"; fg = "#ea9a97"; }
+          { mime = "application/x-tar"; fg = "#ea9a97"; }
+          { mime = "application/x-bzip"; fg = "#ea9a97"; }
+          { mime = "application/x-bzip2"; fg = "#ea9a97"; }
+          { mime = "application/x-7z-compressed"; fg = "#ea9a97"; }
+          { mime = "application/x-rar"; fg = "#ea9a97"; }
+          { name = "*"; fg = "#e0def4"; }
+          { name = "*/"; fg = "#c4a7e7"; }
+        ];
+      };
+    };
+  };
+
+  # Zathura document viewer with Rose Pine Moon
+  programs.zathura = {
+    enable = true;
+    options = {
+      # Rose Pine Moon colors
+      default-bg = "#232136";
+      default-fg = "#e0def4";
+      statusbar-bg = "#2a273f";
+      statusbar-fg = "#e0def4";
+      inputbar-bg = "#2a273f";
+      inputbar-fg = "#e0def4";
+      notification-bg = "#2a273f";
+      notification-fg = "#e0def4";
+      notification-error-bg = "#2a273f";
+      notification-error-fg = "#eb6f92";
+      notification-warning-bg = "#2a273f";
+      notification-warning-fg = "#f6c177";
+      highlight-color = "#f6c177";
+      highlight-active-color = "#c4a7e7";
+      completion-bg = "#2a273f";
+      completion-fg = "#e0def4";
+      completion-highlight-bg = "#393552";
+      completion-highlight-fg = "#e0def4";
+      recolor = true;
+      recolor-lightcolor = "#232136";
+      recolor-darkcolor = "#e0def4";
+      recolor-keephue = true;
+    };
+  };
 
 }
