@@ -71,7 +71,7 @@
 
     # Wallpaper
     swww
-    variety
+    waypaper
 
     # Clipboard
     wl-clipboard
@@ -85,6 +85,7 @@
     polkit_gnome
     wdisplays
     wlsunset
+    networkmanagerapplet
 
     # GTK theming support
     gnome-themes-extra
