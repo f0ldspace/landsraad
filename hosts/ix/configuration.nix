@@ -97,15 +97,17 @@
 
   services.mpd = {
     enable = true;
-    musicDirectory = "/home/f0ld/Music";
     user = "f0ld";
-    playlistDirectory = "/home/f0ld/Music";
-    settings.audio_output = [
-      {
-        type = "pipewire";
-        name = "PipeWire Output";
-      }
-    ];
+    settings = {
+      music_directory = "/home/f0ld/Music";
+      playlist_directory = "/home/f0ld/Music";
+      audio_output = [
+        {
+          type = "pipewire";
+          name = "PipeWire Output";
+        }
+      ];
+    };
   };
 
   services.navidrome = {
@@ -230,11 +232,11 @@
     mpv
     signal-desktop
     btop
-    inputs.claude-desktop.packages.${system}.claude-desktop
+    inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop
     cryptomator
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "trinity" ''
-      exec ${inputs.trinity.packages.${pkgs.system}.default}/bin/nvim "$@"
+      exec ${inputs.trinity.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/nvim "$@"
     '')
     wike
     vlc

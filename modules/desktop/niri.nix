@@ -25,7 +25,7 @@
   security.polkit.enable = true;
 
   # PAM configuration for swaylock authentication
-  security.pam.services.swaylock = {};
+  security.pam.services.swaylock = { };
 
   # Enable dconf for GTK settings to work in niri session
   programs.dconf.enable = true;
@@ -50,7 +50,6 @@
 
     # Status bar
     waybar
-
     # Launcher
     wofi
 

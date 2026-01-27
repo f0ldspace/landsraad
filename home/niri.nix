@@ -29,6 +29,13 @@ in
 # iris:     #c4a7e7
 
 {
+  home.pointerCursor = {
+    gtk.enable = true;
+    name = "BreezeX-RosePine-Linux";
+    package = pkgs.rose-pine-cursor;
+    size = 24;
+  };
+
   dconf.enable = true;
 
   # Remove GTK titlebars via dconf
@@ -36,15 +43,25 @@ in
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "";
     };
+    "org/gnome/desktop/interface" = {
+      cursor-theme = "BreezeX-RosePine-Linux";
+      cursor-size = 24;
+      gtk-theme = "rose-pine-moon";
+      icon-theme = "rose-pine-moon";
+      color-scheme = "prefer-dark";
+    };
   };
 
   # GTK theming to remove CSD decorations
   gtk = {
     enable = true;
-    theme.name = "Adwaita-dark";
+    theme = {
+      name = "rose-pine-moon";
+      package = pkgs.rose-pine-gtk-theme;
+    };
     iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
+      name = "rose-pine-moon";
+      package = pkgs.rose-pine-icon-theme;
     };
     gtk3.extraConfig = {
       gtk-decoration-layout = "";
@@ -119,8 +136,8 @@ in
 
     // Cursor
     cursor {
-      xcursor-theme "Bibata-Modern-Classic"
-      xcursor-size 20
+      xcursor-theme "BreezeX-RosePine-Linux"
+      xcursor-size 24
     }
 
     // Prefer server-side decorations
@@ -684,19 +701,21 @@ in
   # Mako notification daemon
   services.mako = {
     enable = true;
-    backgroundColor = "#232136";
-    textColor = "#e0def4";
-    borderColor = "#c4a7e7";
-    borderRadius = 0;
-    borderSize = 2;
-    defaultTimeout = 5000;
-    font = "JetBrainsMono Nerd Font 11";
-    width = 350;
-    height = 150;
-    margin = "12";
-    padding = "12";
-    anchor = "top-right";
-    layer = "overlay";
+    settings = {
+      background-color = "#232136";
+      text-color = "#e0def4";
+      border-color = "#c4a7e7";
+      border-radius = 0;
+      border-size = 2;
+      default-timeout = 5000;
+      font = "JetBrainsMono Nerd Font 11";
+      width = 350;
+      height = 150;
+      margin = "12";
+      padding = "12";
+      anchor = "top-right";
+      layer = "overlay";
+    };
   };
 
   # Swaylock configuration
