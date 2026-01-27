@@ -1225,7 +1225,7 @@ in
     Unit.Description = "Run Taskwarrior notifications every 5 minutes";
     Timer = {
       OnBootSec = "1min";
-      OnUnitActiveSec = "5min";
+      OnUnitActiveSec = "45min";
       Unit = "taskwarrior-notify.service";
     };
     Install.WantedBy = [ "default.target" ];
