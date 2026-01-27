@@ -149,19 +149,41 @@ in
     }
 
     window-rule {
+      match app-id="rmpc"
+      open-floating true
+    }
+    window-rule {
       match title="Taskwarrior"
+      open-floating true
+    }
+
+    window-rule {
+      match app-id="Slack"
+      default-column-width { proportion 0.4; }
+    }
+    window-rule {
+      match title="OpenSpeedRun"
+      default-column-width { proportion 0.2; }
+    }
+
+    window-rule {
+      match app-id="wiki-nvim"
       default-column-width { proportion 0.3; }
     }
+
 
        // Keybindings
     binds {
       // Mod = Super/Logo key
       Mod+T { spawn "alacritty"; }
+      Mod+Shift+T { spawn "alacritty" "--title" "Taskwarrior" "-e" "taskwarrior-tui"; }
       Mod+D { spawn "wofi" "--show" "drun"; }
       Mod+B { spawn "zen"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+S { spawn "flatpak" "run" "net.mkiol.SpeechNote"; }
       Mod+Q { close-window; }
+      Mod+W { spawn "alacritty" "--class" "wiki-nvim" "--working-directory" "/home/f0ld/wiki" "-e" "trinity"; }
+      Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
 
       // Vim-style navigation
       Mod+H { focus-column-left; }

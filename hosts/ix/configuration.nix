@@ -15,6 +15,7 @@
     ./websites.nix
     # Shared modules
     ../../modules/programming.nix
+    ../../modules/taskwarrior-server.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
     ../../modules/desktop/niri.nix
@@ -195,6 +196,7 @@
   environment.systemPackages = with pkgs; [
     protonmail-desktop
     wget
+    openspeedrun
     jq
     mat2
     ungoogled-chromium
@@ -205,6 +207,7 @@
     libation
     exiftool
     lunar-client
+    prismlauncher
     wakatime-cli
     obs-studio
     mpd-mpris
@@ -215,7 +218,7 @@
     satty
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
-    variety
+    waypaper
     via
     ffmpeg
     joplin-desktop
