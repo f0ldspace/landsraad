@@ -15,7 +15,11 @@
     ./websites.nix
     # Shared modules
     ../../modules/programming.nix
+    # Servers
+    ../../modules/wakapi-server.nix
     ../../modules/taskwarrior-server.nix
+    ../../modules/audiobookshelf-server.nix
+    ../../modules/navidrone.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
     ../../modules/desktop/niri.nix
@@ -59,41 +63,6 @@
   services.printing.enable = true;
 
   # NOTE: SERVERS
-  # Wiki.js
-  #  services.postgresql = {
-  #  enable = true;
-  # ensureDatabases = [ "wiki-js" ];
-  # ensureUsers = [
-  #   {
-  #     name = "wiki-js";
-  #     ensureDBOwnership = true;
-  #   }
-  # ];
-  #};
-
-  #services.wiki-js = {
-  # enable = true;
-  # settings.db = {
-  #   type = "postgres";
-  #   host = "/run/postgresql";
-  #   db = "wiki-js";
-  #   user = "wiki-js";
-  # };
-  #};
-
-  #systemd.services.wiki-js = {
-  # requires = [ "postgresql.service" ];
-  # after = [ "postgresql.service" ];
-  #};
-
-  services.wakapi = {
-    enable = true;
-    passwordSalt = "salty";
-    settings.server = {
-      listen_ipv4 = "127.0.0.1";
-      port = 3040;
-    };
-  };
 
   services.mpd = {
     enable = true;
@@ -110,39 +79,6 @@
     };
   };
 
-  services.navidrome = {
-    enable = true;
-    settings = {
-      Address = "0.0.0.0";
-      Port = 4533;
-      MusicFolder = "/home/f0ld/Music";
-    };
-  };
-
-  systemd.services.navidrome.serviceConfig = {
-    User = lib.mkForce "f0ld";
-    Group = lib.mkForce "users";
-    BindReadOnlyPaths = [ "/home/f0ld/Music" ];
-    ProtectHome = lib.mkForce false;
-  };
-
-  services.audiobookshelf = {
-    enable = true;
-    port = 8000; # default is 8000, change if needed
-    host = "0.0.0.0"; # or "0.0.0.0" if you want LAN access
-  };
-
-  systemd.services.audiobookshelf.serviceConfig = {
-    User = lib.mkForce "f0ld";
-    Group = lib.mkForce "users";
-    BindReadOnlyPaths = [ "/home/f0ld/Audiobooks" ]; # adjust path
-    ProtectHome = lib.mkForce false;
-  };
-
-  networking.firewall.allowedTCPPorts = [
-    4533
-    8000
-  ];
   systemd.services.mpd.environment = {
     XDG_RUNTIME_DIR = "/run/user/1000";
   };
@@ -208,12 +144,9 @@
     localsend
     libation
     exiftool
-    lunar-client
     prismlauncher
-    wakatime-cli
     obs-studio
     mpd-mpris
-    zellij
     bleachbit
     protonvpn-gui
     ffmpegthumbnailer

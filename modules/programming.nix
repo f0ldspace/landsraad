@@ -14,6 +14,8 @@
     claude-monitor
     vscodium-fhs
     python3
+    wakatime-cli
+    zellij
     pipx
     rustc
     cargo

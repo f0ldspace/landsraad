@@ -164,7 +164,10 @@ in
 
       open-floating true
     }
-
+    window-rule {
+      match app-id="yazi"
+      open-floating true
+    }
     window-rule {
       match app-id="rmpc"
       open-floating true
@@ -225,7 +228,7 @@ in
       Mod+Shift+Right { move-column-right; }
 
       // Speedrunning
-      Mod+Y { spawn "openspeedrun-cli" "split"; }
+      Mod+Y { spawn "bash" "-c" "if niri msg windows | grep -qF 'Title: \"OpenSpeedRun\"'; then openspeedrun-cli split; else alacritty --class yazi -e yazi; fi"; }
       Mod+U { spawn "openspeedrun-cli" "reset"; }
       Mod+I { spawn "openspeedrun-cli" "pause"; }
 
@@ -310,8 +313,8 @@ in
 
         modules-left = [
           "niri/workspaces"
-          "niri/window"
           "mpris"
+          "niri/window"
         ];
         modules-center = [ "clock" ];
         modules-right = [
@@ -871,22 +874,7 @@ in
             TODAY_DIR="$WORKLOG_DIR/$(today)"
             mkdir -p "$TODAY_DIR"
 
-            grim /tmp/worklog-screen.png
-
-            WEBCAM_OK=false
-            if ffmpeg -f v4l2 -i /dev/video0 -frames:v 1 /tmp/worklog-webcam.jpg -y -loglevel quiet 2>/dev/null; then
-              WEBCAM_OK=true
-            fi
-
-            if [ "$WEBCAM_OK" = true ]; then
-              magick /tmp/worklog-screen.png \
-                \( /tmp/worklog-webcam.jpg -resize 320x -background none \
-                   -bordercolor '#232136' -border 3 \) \
-                -gravity SouthEast -geometry +20+20 -composite \
-                "$TODAY_DIR/$TIMESTAMP.jpg"
-            else
-              magick /tmp/worklog-screen.png "$TODAY_DIR/$TIMESTAMP.jpg"
-            fi
+            ffmpeg -f v4l2 -i /dev/video0 -frames:v 1 "$TODAY_DIR/$TIMESTAMP.jpg" -y -loglevel quiet 2>/dev/null
 
             COUNT=$(cat "$COUNT_FILE" 2>/dev/null || echo 0)
             echo $((COUNT + 1)) > "$COUNT_FILE"
