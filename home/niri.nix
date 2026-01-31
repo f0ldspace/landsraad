@@ -181,6 +181,12 @@ in
       match app-id="Slack"
       default-column-width { proportion 0.4; }
     }
+
+    window-rule {
+      match app-id="org.pwmt.zathura"
+      default-column-width { proportion 0.4; }
+    }
+
     window-rule {
       match title="OpenSpeedRun"
       default-column-width { proportion 0.2; }
@@ -196,7 +202,7 @@ in
     binds {
       // Mod = Super/Logo key
       Mod+T { spawn "alacritty"; }
-      Mod+Shift+T { spawn "alacritty" "--title" "Taskwarrior" "-e" "taskwarrior-tui"; }
+      Mod+Shift+T { spawn "bash" "-c" "alacritty --title Taskwarrior -e taskwarrior-tui && task synchronize"; }
       Mod+D { spawn "wofi" "--show" "drun"; }
       Mod+B { spawn "zen"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
@@ -1254,7 +1260,7 @@ in
     Unit.Description = "Run Taskwarrior notifications every 5 minutes";
     Timer = {
       OnBootSec = "1min";
-      OnUnitActiveSec = "45min";
+      OnUnitActiveSec = "15min";
       Unit = "taskwarrior-notify.service";
     };
     Install.WantedBy = [ "default.target" ];

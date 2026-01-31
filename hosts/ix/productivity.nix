@@ -14,6 +14,7 @@
     tinymist
     slack
     anki
+    speedtest-cli
     imagemagick
     wikit
     glow
