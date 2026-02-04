@@ -93,7 +93,7 @@ in
         accel-speed 0.0
       }
 
-      focus-follows-mouse
+      // focus-follows-mouse
     }
 
     // Output/display configuration

@@ -145,7 +145,13 @@
     libation
     exiftool
     prismlauncher
-    obs-studio
+(wrapOBS {
+      plugins = with obs-studio-plugins; [
+        obs-retro-effects
+        obs-composite-blur
+        advanced-scene-switcher
+      ];
+    })
     mpd-mpris
     bleachbit
     protonvpn-gui
