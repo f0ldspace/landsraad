@@ -15,11 +15,13 @@
     ./websites.nix
     # Shared modules
     ../../modules/programming.nix
+    ../../modules/ai.nix
     # Servers
     ../../modules/wakapi-server.nix
     ../../modules/taskwarrior-server.nix
     ../../modules/audiobookshelf-server.nix
     ../../modules/navidrone.nix
+    ../../modules/restic-backups.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
     ../../modules/desktop/niri.nix
@@ -83,31 +85,6 @@
     XDG_RUNTIME_DIR = "/run/user/1000";
   };
 
-  services.restic.backups.trinity = {
-    repository = "b2:Trinity-Snapshots";
-    paths = [ "/home/f0ld" ];
-    environmentFile = "/etc/restic/b2-env";
-    passwordFile = "/etc/restic/password";
-
-    timerConfig = {
-      OnCalendar = "daily";
-      Persistent = true; # runs missed backups after sleep/shutdown
-    };
-
-    exclude = [
-      ".cache"
-      "node_modules"
-      ".local/share/Trash"
-      "Downloads"
-      "Audiobooks"
-    ];
-
-    pruneOpts = [
-      "--keep-daily 7"
-      "--keep-weekly 4"
-      "--keep-monthly 6"
-    ];
-  };
   # services.xserver.libinput.enable = true;
 
   users.users.f0ld = {
@@ -177,7 +154,6 @@
     mpv
     signal-desktop
     btop
-    inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop
     cryptomator
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "trinity" ''

@@ -10,8 +10,6 @@
     lazygit
     git
     gh
-    claude-code
-    claude-monitor
     vscodium-fhs
     python3
     wakatime-cli
