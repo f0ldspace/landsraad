@@ -82,8 +82,27 @@ preflight_checks() {
   if nix flake --help &>/dev/null 2>&1; then
     success "Nix flakes are enabled"
   else
-    warn "Nix flakes may not be enabled. The script will attempt to enable them."
+    warn "Nix flakes not enabled. Enabling now..."
+    enable_experimental_features
   fi
+}
+
+enable_experimental_features() {
+  local nix_conf_dir="$HOME/.config/nix"
+  local nix_conf="$nix_conf_dir/nix.conf"
+
+  ensure_dir "$nix_conf_dir"
+
+  if [[ -f "$nix_conf" ]]; then
+    if grep -q "experimental-features" "$nix_conf"; then
+      info "experimental-features already configured in $nix_conf"
+      return 0
+    fi
+    echo "experimental-features = nix-command flakes" >> "$nix_conf"
+  else
+    echo "experimental-features = nix-command flakes" > "$nix_conf"
+  fi
+  success "Enabled experimental features (nix-command, flakes) in $nix_conf"
 }
 
 configure_user() {
@@ -227,6 +246,13 @@ clone_repositories() {
     info "Cloning Wofi scripts..."
     $GIT_CMD clone "$WOFI_REPO" "$wofi_dest"
     success "Cloned Wofi scripts to $wofi_dest"
+  fi
+
+  info "Updating flake lock (local path inputs may have changed)..."
+  if nix flake update --flake "$REPO_ROOT" 2>/dev/null; then
+    success "Flake lock updated"
+  else
+    warn "Could not update flake lock. You may need to run: nix flake update"
   fi
 }
 
