@@ -33,11 +33,6 @@ let
       icon = "nix.png";
     }
     {
-      name = "godel";
-      url = "https://app.godelterminal.com";
-      icon = "openrouter.png";
-    }
-    {
       name = "openrouter";
       url = "https://openrouter.ai/chat";
       icon = "openrouter.png";
@@ -46,11 +41,6 @@ let
       name = "audiobookshelf";
       url = "http://localhost:8000";
       icon = "audiobookshelf.png";
-    }
-    {
-      name = "Fast";
-      url = "https://fast.com";
-      icon = "fast.png";
     }
     {
       name = "EA Forum";

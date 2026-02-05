@@ -116,6 +116,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "libvirtd"
     ];
     packages = with pkgs; [
     ];
@@ -130,6 +131,10 @@
     "flakes"
   ];
 
+  # NOTE: Virtual
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
+
   # NOTE: SOFTWARE
   environment.systemPackages = with pkgs; [
     protonmail-desktop
@@ -141,11 +146,12 @@
     fd
     ripgrep
     bitwarden-desktop
+    qemu_full
     localsend
     libation
     exiftool
     prismlauncher
-(wrapOBS {
+    (wrapOBS {
       plugins = with obs-studio-plugins; [
         obs-retro-effects
         obs-composite-blur

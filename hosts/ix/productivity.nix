@@ -17,7 +17,6 @@
     speedtest-cli
     imagemagick
     wikit
-    kiwix
     glow
     newsboat
     taskwarrior3
