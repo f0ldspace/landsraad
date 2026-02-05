@@ -183,6 +183,10 @@ in
     }
 
     window-rule {
+      match title="Huddle:"
+      default-column-width { proportion 0.2; }
+    }
+    window-rule {
       match app-id="org.pwmt.zathura"
       default-column-width { proportion 0.4; }
     }
