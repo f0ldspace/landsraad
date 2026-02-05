@@ -79,11 +79,14 @@ preflight_checks() {
     success "git is available"
   fi
 
+  # Always ensure experimental features config exists (the check may pass
+  # in nix-shell but fail for the regular user)
+  enable_experimental_features
+
   if nix flake --help &>/dev/null 2>&1; then
     success "Nix flakes are enabled"
   else
-    warn "Nix flakes not enabled. Enabling now..."
-    enable_experimental_features
+    warn "Nix flakes check failed - you may need to restart your shell"
   fi
 }
 
