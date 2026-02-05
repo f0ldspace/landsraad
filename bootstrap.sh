@@ -252,7 +252,7 @@ clone_repositories() {
   fi
 
   info "Updating flake lock (local path inputs may have changed)..."
-  if nix flake update --flake "$REPO_ROOT" 2>/dev/null; then
+  if nix --extra-experimental-features 'nix-command flakes' flake update --flake "$REPO_ROOT"; then
     success "Flake lock updated"
   else
     warn "Could not update flake lock. You may need to run: nix flake update"
