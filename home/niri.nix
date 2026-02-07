@@ -212,7 +212,7 @@ in
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+S { spawn "flatpak" "run" "net.mkiol.SpeechNote"; }
       Mod+Q { close-window; }
-      Mod+W { spawn "alacritty" "--class" "wiki-nvim" "--working-directory" "/home/f0ld/wiki" "-e" "trinity"; }
+      Mod+W { spawn "alacritty" "--class" "wiki-nvim" "--working-directory" "/home/f0ld/wiki/content" "-e" "trinity"; }
       Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
 
       // Vim-style navigation
