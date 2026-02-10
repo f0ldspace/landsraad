@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  username,
   ...
 }:
 {
@@ -13,13 +14,13 @@
   };
 
   systemd.services.audiobookshelf.serviceConfig = {
-    User = lib.mkForce "f0ld";
+    User = lib.mkForce username;
     Group = lib.mkForce "users";
     BindPaths = [
-      "/home/f0ld/Podcasts"
+      "/home/${username}/Podcasts"
     ];
     BindReadOnlyPaths = [
-      "/home/f0ld/Audiobooks"
+      "/home/${username}/Audiobooks"
     ];
     ProtectHome = lib.mkForce false;
   };

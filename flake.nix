@@ -30,7 +30,10 @@
     {
       nixosConfigurations = {
         ix = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          specialArgs = {
+            inherit inputs;
+            username = "f0ld";
+          };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/ix/configuration.nix
@@ -39,7 +42,36 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.f0ld = import ./home/f0ld.nix;
-              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                username = "f0ld";
+              };
+            }
+            {
+              nixpkgs.overlays = [
+                (import ./overlays/railway-wallet.nix)
+              ];
+            }
+          ];
+        };
+
+        bene = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs;
+            username = "kh";
+          };
+          modules = [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
+            ./hosts/bene/configuration.nix
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.kh = import ./home/kh.nix;
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                username = "kh";
+              };
             }
             {
               nixpkgs.overlays = [
@@ -50,7 +82,10 @@
         };
 
         caladan = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs; };
+          specialArgs = {
+            inherit inputs;
+            username = "f0ld";
+          };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/caladan/configuration.nix

@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   lib,
+  username,
   ...
 }:
 
@@ -13,6 +14,7 @@
     ./finance.nix
     ./productivity.nix
     ./websites.nix
+    ../../modules/gaming.nix
     # Shared modules
     ../../modules/programming.nix
     ../../modules/ai.nix
@@ -22,6 +24,8 @@
     ../../modules/audiobookshelf-server.nix
     ../../modules/navidrone.nix
     ../../modules/restic-backups.nix
+    ../../modules/searxng.nix
+    ../../modules/mediawiki.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
     ../../modules/desktop/niri.nix
@@ -30,11 +34,15 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
+  boot.kernelModules = [ "v4l2loopback" ];
   hardware.keyboard.qmk.enable = true;
   services.udev.extraRules = ''
     # Via/QMK keyboard access
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
   '';
+  hardware.logitech.wireless.enable = true;
+  hardware.logitech.wireless.enableGraphical = true; # pulls in Solaar
 
   nix.gc = {
     automatic = true;
@@ -68,10 +76,10 @@
 
   services.mpd = {
     enable = true;
-    user = "f0ld";
+    user = username;
     settings = {
-      music_directory = "/home/f0ld/Music";
-      playlist_directory = "/home/f0ld/Music";
+      music_directory = "/home/${username}/Music";
+      playlist_directory = "/home/${username}/Music";
       audio_output = [
         {
           type = "pipewire";
@@ -87,9 +95,9 @@
 
   # services.xserver.libinput.enable = true;
 
-  users.users.f0ld = {
+  users.users.${username} = {
     isNormalUser = true;
-    description = "f0ldspace";
+    description = username;
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -99,7 +107,6 @@
     ];
   };
   programs.firefox.enable = true;
-  programs.steam.enable = true;
   nixpkgs.config.allowUnfree = true;
   environment.variables.EDITOR = "trinity";
   services.flatpak.enable = true;
@@ -116,7 +123,6 @@
   environment.systemPackages = with pkgs; [
     protonmail-desktop
     wget
-    openspeedrun
     jq
     mat2
     ungoogled-chromium
@@ -127,7 +133,6 @@
     localsend
     libation
     exiftool
-    prismlauncher
     (wrapOBS {
       plugins = with obs-studio-plugins; [
         obs-retro-effects

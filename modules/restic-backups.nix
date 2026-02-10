@@ -1,13 +1,14 @@
 {
   config,
   pkgs,
+  username,
   ...
 }:
 
 {
   services.restic.backups.trinity = {
     repository = "b2:Trinity-Snapshots";
-    paths = [ "/home/f0ld" ];
+    paths = [ "/home/${username}" ];
     environmentFile = "/etc/restic/b2-env";
     passwordFile = "/etc/restic/password";
 

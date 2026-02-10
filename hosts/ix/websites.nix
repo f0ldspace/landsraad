@@ -4,6 +4,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }:
 let
@@ -17,7 +18,7 @@ let
       name = "${name}-app";
       desktopName = name;
       exec = "${pkgs.chromium}/bin/chromium --app=${url}";
-      icon = "/home/f0ld/.icons/${icon}";
+      icon = "/home/${username}/.icons/${icon}";
       categories = [ "Network" ];
     };
 

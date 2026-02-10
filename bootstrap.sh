@@ -178,54 +178,29 @@ setup_hardware_config() {
   fi
 }
 
-update_paths_for_user() {
+verify_host_config() {
   echo ""
-  info "Updating paths for user '$TARGET_USER'"
-  echo "========================================"
+  info "Verifying host configuration for '$TARGET_HOST'"
+  echo "=================================================="
 
-  if [[ "$TARGET_USER" == "$DEFAULT_USER" ]]; then
-    info "Username matches default ($DEFAULT_USER), no path updates needed"
-    return 0
+  # Check that the host exists in flake.nix
+  if ! grep -q "\"$TARGET_HOST\"" "$REPO_ROOT/flake.nix" 2>/dev/null && \
+     ! grep -q "$TARGET_HOST = " "$REPO_ROOT/flake.nix" 2>/dev/null; then
+    warn "Host '$TARGET_HOST' not found in flake.nix"
+    warn "You need to add a nixosConfigurations.$TARGET_HOST entry to flake.nix"
+    warn "See existing entries (ix, bene) for examples"
+    return 1
   fi
+  success "Host '$TARGET_HOST' found in flake.nix"
 
-  local files_to_update=(
-    "$REPO_ROOT/flake.nix"
-    "$REPO_ROOT/home/f0ld.nix"
-    "$REPO_ROOT/home/niri.nix"
-    "$REPO_ROOT/hosts/ix/configuration.nix"
-    "$REPO_ROOT/hosts/ix/websites.nix"
-    "$REPO_ROOT/modules/navidrone.nix"
-    "$REPO_ROOT/modules/audiobookshelf-server.nix"
-  )
-
-  for file in "${files_to_update[@]}"; do
-    if [[ -f "$file" ]]; then
-      # Create backup
-      cp "$file" "$file.bak"
-
-      sed -i "s|/home/$DEFAULT_USER/|/home/$TARGET_USER/|g" "$file"
-
-      sed -i "s|home.username = \"$DEFAULT_USER\"|home.username = \"$TARGET_USER\"|g" "$file"
-      sed -i "s|home.homeDirectory = \"/home/$DEFAULT_USER\"|home.homeDirectory = \"/home/$TARGET_USER\"|g" "$file"
-      sed -i "s|user = \"$DEFAULT_USER\"|user = \"$TARGET_USER\"|g" "$file"
-      sed -i "s|User = lib.mkForce \"$DEFAULT_USER\"|User = lib.mkForce \"$TARGET_USER\"|g" "$file"
-      sed -i "s|users.users.$DEFAULT_USER|users.users.$TARGET_USER|g" "$file"
-      sed -i "s|home-manager.users.$DEFAULT_USER|home-manager.users.$TARGET_USER|g" "$file"
-
-      success "Updated paths in $file (backup: $file.bak)"
-    else
-      warn "File not found, skipping: $file"
-    fi
-  done
-
-  if [[ "$TARGET_USER" != "$DEFAULT_USER" && -f "$REPO_ROOT/home/f0ld.nix" ]]; then
-    local new_home_file="$REPO_ROOT/home/$TARGET_USER.nix"
-    if [[ ! -f "$new_home_file" ]]; then
-      cp "$REPO_ROOT/home/f0ld.nix" "$new_home_file"
-      success "Created $new_home_file"
-      warn "You may want to update flake.nix to import ./home/$TARGET_USER.nix"
-    fi
+  # Check that a home-manager file exists for this user
+  local home_file="$REPO_ROOT/home/$TARGET_USER.nix"
+  if [[ ! -f "$home_file" ]]; then
+    warn "No home-manager config found at $home_file"
+    warn "You need to create home/$TARGET_USER.nix (copy from home/f0ld.nix or home/kh.nix)"
+    return 1
   fi
+  success "Home config found: $home_file"
 }
 
 clone_repositories() {
@@ -353,9 +328,7 @@ print_summary() {
   echo "  - Verified NixOS environment"
   echo "  - Configured for user: $TARGET_USER"
   echo "  - Configured for host: $TARGET_HOST"
-  if [[ "$TARGET_USER" != "$DEFAULT_USER" ]]; then
-    echo "  - Updated hardcoded paths from $DEFAULT_USER to $TARGET_USER"
-  fi
+  echo "  - Verified host and home-manager configs exist"
   echo "  - Cloned required repositories (trinity, wofi)"
   echo "  - Created required directories"
   echo "  - Created secret placeholder files"
@@ -364,30 +337,22 @@ print_summary() {
   echo -e "${YELLOW}Manual Steps Required:${NC}"
   echo "============================================================================="
   echo ""
-  echo "1. Fill in secrets with real values:"
+  echo "1. Ensure hosts/$TARGET_HOST/hardware-configuration.nix has real values"
+  echo "   (run: sudo nixos-generate-config --show-hardware-config)"
+  echo ""
+  echo "2. Fill in secrets with real values:"
   echo "   - /etc/restic/b2-env      (Backblaze B2 credentials)"
   echo "   - /etc/restic/password    (Restic encryption password)"
   echo "   - /etc/wakapi/secrets.env (Wakapi password salt)"
   echo "   - ~/.wakatime.cfg         (WakaTime/Wakapi API key)"
   echo ""
-  echo "2. Add icon files to ~/.icons/:"
-  echo "   - lesswrong.png"
-  echo "   - nix.png"
-  echo "   - openrouter.png"
-  echo "   - audiobookshelf.png"
-  echo "   - ea.png"
+  echo "3. Add icon files to ~/.icons/ (if using websites.nix):"
+  echo "   - lesswrong.png, nix.png, openrouter.png, etc."
   echo ""
-  echo "3. Build and switch to the configuration:"
+  echo "4. Build and switch to the configuration:"
   echo "   cd $REPO_ROOT"
   echo "   sudo nixos-rebuild switch --flake .#$TARGET_HOST"
   echo ""
-  echo "4. Verify the build:"
-  echo "   nix flake check"
-  echo ""
-  if [[ "$TARGET_USER" != "$DEFAULT_USER" ]]; then
-    echo "5. Review the backup files (*.bak) and remove them when satisfied"
-    echo ""
-  fi
   echo "============================================================================="
 }
 
@@ -405,7 +370,7 @@ main() {
   preflight_checks
   configure_user
   setup_hardware_config
-  update_paths_for_user
+  verify_host_config
   clone_repositories
   create_directories
   setup_secrets
