@@ -6,15 +6,6 @@
   ...
 }:
 
-let
-  waybar-timer-src = pkgs.fetchFromGitHub {
-    owner = "nirabyte";
-    repo = "waybar-timer";
-    rev = "main";
-    sha256 = "sha256-2R4dpTbv8OPxVdHjjymdNzegePYzacdHKogOnTO8/qY=";
-  };
-in
-
 # Rose Pine Moon colors:
 # base:     #232136
 # surface:  #2a273f
@@ -213,8 +204,8 @@ in
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+S { spawn "flatpak" "run" "net.mkiol.SpeechNote"; }
       Mod+Q { close-window; }
-      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/wiki/" "-e" "opencode"; }
-      Mod+W { spawn "alacritty" "--class" "wiki-nvim" "--working-directory" "/home/${username}/wiki/wiki-export" "-e" "trinity"; }
+      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/wiki/" "-e" "opencode" "--agent" "wiki"; }
+      Mod+W { spawn "alacritty" "--class" "wiki-nvim" "--working-directory" "/home/${username}/wiki/" "-e" "trinity"; }
       Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
 
       // Vim-style navigation
@@ -325,15 +316,14 @@ in
 
         modules-left = [
           "niri/workspaces"
+          "custom/khal"
           "mpris"
           "niri/window"
         ];
         modules-center = [ "clock" ];
         modules-right = [
-          "custom/taskwarrior"
           "custom/wakatime"
           "custom/worklog"
-          "custom/timer"
           "pulseaudio"
           "battery"
           "tray"
@@ -407,18 +397,6 @@ in
           on-click = "bash -c ~/.local/bin/power-menu.sh";
         };
 
-        "custom/timer" = {
-          exec = "bash ~/.local/bin/waybar-timer.sh";
-          return-type = "json";
-          format = "{}";
-          on-click = "bash ~/.local/bin/waybar-timer.sh click";
-          on-click-right = "bash ~/.local/bin/waybar-timer.sh right";
-          on-click-middle = "bash ~/.local/bin/waybar-timer.sh middle";
-          on-scroll-up = "bash ~/.local/bin/waybar-timer.sh down";
-          on-scroll-down = "bash ~/.local/bin/waybar-timer.sh up";
-          tooltip = true;
-        };
-
         "custom/wakatime" = {
           format = "{}";
           return-type = "json";
@@ -427,14 +405,13 @@ in
           tooltip = true;
         };
 
-        "custom/taskwarrior" = {
+        "custom/khal" = {
           format = "{}";
           return-type = "json";
-          exec = "~/.config/waybar/scripts/taskwarrior-status.sh";
+          exec = "~/.config/waybar/scripts/khal-status.sh";
           interval = 60;
           tooltip = true;
-          on-click = "alacritty --title Taskwarrior -e bash -c '~/.config/waybar/scripts/taskwarrior-add.sh'";
-          on-click-right = "alacritty --title Taskwarrior -e bash -c '~/.config/waybar/scripts/taskwarrior-done.sh'";
+          on-click = "alacritty --title Calendar -e khal interactive";
         };
 
         "custom/worklog" = {
@@ -589,50 +566,6 @@ in
         background-color: #393552;
       }
 
-      #custom-timer {
-        background-color: #2a273f;
-        border-radius: 0;
-        padding: 2px 10px;
-        margin: 2px 4px;
-        color: #e0def4;
-        transition: all 0.2s ease;
-      }
-
-      #custom-timer:hover {
-        background-color: #393552;
-      }
-
-      #custom-timer.disabled,
-      #custom-timer.reset {
-        color: #6e6a86;
-      }
-
-      #custom-timer.idle {
-        color: #908caa;
-      }
-
-      #custom-timer.select,
-      #custom-timer.pomo_msg {
-        color: #c4a7e7;
-      }
-
-      #custom-timer.running {
-        color: #9ccfd8;
-      }
-
-      #custom-timer.paused,
-      #custom-timer.warning {
-        color: #f6c177;
-      }
-
-      #custom-timer.pomo_break {
-        color: #ea9a97;
-      }
-
-      #custom-timer.done {
-        color: #eb6f92;
-      }
-
       #custom-wakatime {
         background-color: #2a273f;
         border-radius: 0;
@@ -671,7 +604,7 @@ in
         color: #f6c177;
       }
 
-      #custom-taskwarrior {
+      #custom-khal {
         background-color: #2a273f;
         border-radius: 0;
         padding: 2px 10px;
@@ -680,12 +613,16 @@ in
         transition: all 0.2s ease;
       }
 
-      #custom-taskwarrior:hover {
+      #custom-khal:hover {
         background-color: #393552;
       }
 
-      #custom-taskwarrior.due {
-        color: #eb6f92;
+      #custom-khal.active {
+        color: #9ccfd8;
+      }
+
+      #custom-khal.upcoming {
+        color: #f6c177;
       }
 
       tooltip {
@@ -808,17 +745,6 @@ in
           ;;
       esac
     '';
-  };
-
-  home.file.".local/bin/waybar-timer.sh" = {
-    executable = true;
-    text = builtins.replaceStrings [ "#!/bin/bash" ] [ "#!/usr/bin/env bash" ] (
-      builtins.readFile "${waybar-timer-src}/timer.sh"
-    );
-  };
-
-  home.file.".config/waybar/sounds/timer.mp3" = {
-    source = "${waybar-timer-src}/sounds/timer.mp3";
   };
 
   home.file.".local/bin/waybar-wakatime.sh" = {
@@ -964,313 +890,156 @@ in
     '';
   };
 
-  # Taskwarrior Waybar integration scripts
-  # https://github.com/coccor/taskwarrior-waybar
-  home.file.".config/waybar/scripts/humanize-date.sh" = {
+  # Khal calendar Waybar integration
+  home.file.".config/waybar/scripts/khal-status.sh" = {
     executable = true;
     text = ''
       #!/usr/bin/env bash
       set -eEo pipefail
 
-      input_date="$1"
+      CAL_ICON=$'\uf073'
 
-      if [ -z "$input_date" ]; then
-        echo "Error: No date provided" >&2
-        exit 1
-      fi
-
-      parse_date() {
-        local date="$1"
-        if [[ "$date" =~ ^[0-9]{8}T[0-9]{6}Z$ ]]; then
-          echo "$date" | sed 's/\([0-9]\{4\}\)\([0-9]\{2\}\)\([0-9]\{2\}\)T\([0-9]\{2\}\)\([0-9]\{2\}\)\([0-9]\{2\}\)Z/\1-\2-\3T\4:\5:\6Z/'
-        else
-          echo "$date"
-        fi
-      }
-
-      parsed_date=$(parse_date "$input_date")
-      date_seconds=$(date --date="$parsed_date" +%s 2>/dev/null || { echo "Error: Invalid date format" >&2; exit 1; })
-
-      now_seconds=$(date +%s)
-      diff=$((date_seconds - now_seconds))
-
-      date_only=$(date --date="$parsed_date" +%Y-%m-%d 2>/dev/null)
-      today=$(date +%Y-%m-%d)
-      tomorrow=$(date --date="tomorrow" +%Y-%m-%d)
-      yesterday=$(date --date="yesterday" +%Y-%m-%d)
-
-      if [ "$date_only" = "$today" ]; then
-        if [ "$diff" -gt 0 ]; then
-          hours=$((diff / 3600))
-          minutes=$(((diff % 3600) / 60))
-          if [ "$hours" -gt 0 ]; then
-            echo "today in ''${hours}h''${minutes}m"
-          else
-            echo "today in ''${minutes}m"
-          fi
-        else
-          diff=$(( -diff ))
-          hours=$((diff / 3600))
-          minutes=$(((diff % 3600) / 60))
-          if [ "$hours" -gt 0 ]; then
-            echo "today ''${hours}h''${minutes}m ago"
-          else
-            echo "today ''${minutes}m ago"
-          fi
-        fi
-      elif [ "$date_only" = "$tomorrow" ]; then
-        hours=$((diff / 3600))
-        remaining_hours=$((hours % 24))
-        if [ "$remaining_hours" -gt 0 ]; then
-          echo "tomorrow at $(date --date="$parsed_date" +%H:%M)"
-        else
-          echo "tomorrow"
-        fi
-      elif [ "$date_only" = "$yesterday" ]; then
-        echo "yesterday"
-      elif [ "$diff" -gt 86400 ]; then
-        days=$((diff / 86400))
-        echo "in ''${days}d"
-      elif [ "$diff" -gt 0 ]; then
-        hours=$((diff / 3600))
-        minutes=$(((diff % 3600) / 60))
-        echo "in ''${hours}h''${minutes}m"
-      else
-        diff=$(( -diff ))
-        if [ "$diff" -gt 86400 ]; then
-          days=$((diff / 86400))
-          echo "''${days}d ago"
-        else
-          hours=$((diff / 3600))
-          minutes=$(((diff % 3600) / 60))
-          echo "''${hours}h''${minutes}m ago"
-        fi
-      fi
-    '';
-  };
-
-  home.file.".config/waybar/scripts/taskwarrior-status.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      set -eEo pipefail
-
-      SCRIPT_DIR="$(dirname "''${BASH_SOURCE[0]}")"
-      HUMANIZE_DATE="$SCRIPT_DIR/humanize-date.sh"
-      TASK_ICON=$'\uf0ae'
-
-      output_status() {
-        local state=$1
-        local tooltip=$2
-        local icon=$3
+      output_json() {
+        local text=$1
+        local class=$2
+        local tooltip=$3
         tooltip=$(echo "$tooltip" | sed 's/\\/\\\\/g; s/"/\\"/g')
-        echo "{\"text\":\"$icon\",\"class\":\"''${state}\",\"tooltip\":\"$tooltip\"}"
+        echo "{\"text\":\"$text\",\"class\":\"$class\",\"tooltip\":\"$tooltip\"}"
       }
 
-      tasks_json=$(task +PENDING export 2>/dev/null | jq 'sort_by(.due // "9999") | .[0:10]' 2>/dev/null) || tasks_json="[]"
+      now_epoch=$(date +%s)
 
-      if task +PENDING due.before:now count 2>/dev/null | grep -q '[1-9]'; then
-        state="due"
-        icon="$TASK_ICON !"
-      else
-        state="default"
-        icon="$TASK_ICON"
-      fi
+      # Get today's events from khal
+      # Format: start-time end-time :: title
+      events=$(khal list --day-format "" --format "{start-time} {end-time} :: {title}" today today 2>/dev/null || echo "")
 
-      tooltip=""
-      if [ -n "$tasks_json" ] && [ "$tasks_json" != "[]" ]; then
-        task_count=$(echo "$tasks_json" | jq 'length')
-        overdue_count=$(task +PENDING +OVERDUE count 2>/dev/null || echo 0)
-
-        tooltip="<b>Tasks</b> <span size='small'>($task_count pending"
-        if [ "$overdue_count" -gt 0 ]; then
-          tooltip+=", <span foreground='#ff6b6b'>$overdue_count overdue</span>"
-        fi
-        tooltip+=") </span>&#10;&#10;"
-
-        while IFS= read -r task; do
-          desc=$(echo "$task" | jq -r '.description')
-          due=$(echo "$task" | jq -r '.due // empty')
-          priority=$(echo "$task" | jq -r '.priority // empty')
-
-          if [ -n "$due" ]; then
-            rel_due=$("$HUMANIZE_DATE" "$due" 2>/dev/null || echo "invalid date")
-          else
-            rel_due="no due"
-          fi
-
-          priority_icon=""
-          case "$priority" in
-            H) priority_icon="<span foreground='#ff6b6b'>!</span> " ;;
-            M) priority_icon="<span foreground='#feca57'>-</span> " ;;
-            L) priority_icon="<span foreground='#48dbfb'>-</span> " ;;
-          esac
-
-          if [[ "$rel_due" =~ ago ]] || [[ "$rel_due" = "yesterday" ]]; then
-            tooltip+="''${priority_icon}<span foreground='#ff6b6b'><b>$desc</b></span>"
-            tooltip+=" <span size='small' foreground='#ff6b6b'>$rel_due</span>&#10;"
-          elif [[ "$rel_due" = "today"* ]]; then
-            tooltip+="''${priority_icon}<span foreground='#feca57'><b>$desc</b></span>"
-            tooltip+=" <span size='small' foreground='#feca57'>$rel_due</span>&#10;"
-          elif [[ "$rel_due" = "tomorrow"* ]]; then
-            tooltip+="''${priority_icon}<b>$desc</b>"
-            tooltip+=" <span size='small' foreground='#48dbfb'>$rel_due</span>&#10;"
-          else
-            tooltip+="''${priority_icon}$desc"
-            tooltip+=" <span size='small' alpha='60%'>$rel_due</span>&#10;"
-          fi
-        done < <(echo "$tasks_json" | jq -c '.[]')
-      else
-        tooltip="<b>Tasks</b>&#10;&#10;<span alpha='60%'>No pending tasks</span>"
-      fi
-
-      output_status "$state" "$tooltip" "$icon"
-    '';
-  };
-
-  home.file.".config/waybar/scripts/taskwarrior-add.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-
-      echo -n "Task description: "
-      read desc
-      [ -z "$desc" ] && exit 0
-
-      echo -n "Due (e.g., 5min, 1h, 2d, tomorrow) - optional: "
-      read due
-
-      if [ -n "$due" ]; then
-        if [[ "$due" =~ ^[0-9]+[smhdwy]+$ ]]; then
-          due="now+$due"
-        fi
-        task add "$desc" due:$due >/dev/null
-      else
-        task add "$desc" >/dev/null
-      fi
-
-      echo "Task added: $desc"
-      task synchronize 2>/dev/null
-      read -p "Press Enter to exit..."
-    '';
-  };
-
-  home.file.".config/waybar/scripts/taskwarrior-done.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      set -eEo pipefail
-
-      tasks=$(task +PENDING rc.verbose=nothing rc.report.next.columns:id,description rc.report.next.labels:ID,Description next 2>/dev/null)
-
-      if [ -z "$tasks" ] || ! echo "$tasks" | grep -q '[0-9]'; then
-        notify-send "No pending tasks"
-        echo "No pending tasks"
-        read -p "Press Enter to exit..."
+      if [ -z "$events" ] || echo "$events" | grep -q "^No events$"; then
+        output_json "$CAL_ICON" "default" "<b>Calendar</b>&#10;&#10;<span alpha='60%'>No events today</span>"
         exit 0
       fi
 
-      echo "=== Pending Tasks ==="
-      echo "$tasks"
-      echo ""
+      # Build tooltip with full day agenda
+      tooltip="<b>Calendar</b> <span size='small'>(today)</span>&#10;&#10;"
+      current_event=""
+      current_remaining=""
+      next_event=""
+      next_start_diff=""
 
-      task_ids=$(task +PENDING rc.verbose=nothing rc.report.next.columns:id rc.report.next.labels:ID next 2>/dev/null | grep -E '^[[:space:]]*[0-9]+' | awk '{print $1}')
-      task_count=$(echo "$task_ids" | wc -l)
+      while IFS= read -r line; do
+        [ -z "$line" ] && continue
 
-      if [ "$task_count" -eq 0 ]; then
-        notify-send "No pending tasks"
-        echo "No pending tasks"
-        read -p "Press Enter to exit..."
-        exit 0
-      fi
-
-      echo -n "Enter task ID to mark done (or press Enter for most urgent): "
-      read chosen_id
-
-      if [ -z "$chosen_id" ]; then
-        chosen_id=$(echo "$task_ids" | head -n1)
-      fi
-
-      if ! echo "$task_ids" | grep -q "^''${chosen_id}$"; then
-        echo "Invalid task ID: $chosen_id"
-        read -p "Press Enter to exit..."
-        exit 1
-      fi
-
-      desc=$(task _get "''${chosen_id}.description" 2>/dev/null)
-      task done "$chosen_id" >/dev/null 2>&1
-
-      notify-send "Task completed" "$desc"
-      echo "Task completed: $desc"
-      task synchronize 2>/dev/null
-      read -p "Press Enter to exit..."
-    '';
-  };
-
-  home.file.".config/waybar/scripts/taskwarrior-notify.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      set -eEo pipefail
-
-      SCRIPT_DIR="$(dirname "''${BASH_SOURCE[0]}")"
-      HUMANIZE_DATE="$SCRIPT_DIR/humanize-date.sh"
-
-      overdue_tasks=$(task +PENDING +OVERDUE export 2>/dev/null || echo "[]")
-      due_soon_tasks=$(task +PENDING due.before:now+5min export 2>/dev/null || echo "[]")
-
-      all_due_tasks=$(echo "$overdue_tasks$due_soon_tasks" | jq -s 'add | unique_by(.uuid)' 2>/dev/null || echo "[]")
-
-      if [ -n "$all_due_tasks" ] && [ "$all_due_tasks" != "[]" ] && [ "$all_due_tasks" != "null" ]; then
-        count=$(echo "$all_due_tasks" | jq 'length')
-        overdue_count=$(echo "$overdue_tasks" | jq 'length' 2>/dev/null || echo 0)
-
-        if [ "$overdue_count" -gt 0 ]; then
-          msg="$overdue_count overdue, $((count - overdue_count)) due soon"
+        # Parse "HH:MM HH:MM :: title" or "HH:MM  :: title" (all-day)
+        if [[ "$line" =~ ^([0-9]{2}:[0-9]{2})\ ([0-9]{2}:[0-9]{2})\ ::\ (.+)$ ]]; then
+          start_time="''${BASH_REMATCH[1]}"
+          end_time="''${BASH_REMATCH[2]}"
+          title="''${BASH_REMATCH[3]}"
+        elif [[ "$line" =~ ^([0-9]{2}:[0-9]{2})\ +::\ (.+)$ ]]; then
+          start_time="''${BASH_REMATCH[1]}"
+          end_time=""
+          title="''${BASH_REMATCH[2]}"
         else
-          msg="$count task(s) due soon"
+          # All-day or unparseable event
+          tooltip+="<span foreground='#c4a7e7'>all day</span>  $line&#10;"
+          continue
         fi
 
-        list=""
-        while IFS= read -r task; do
-          desc=$(echo "$task" | jq -r '.description')
-          due=$(echo "$task" | jq -r '.due // empty')
+        start_epoch=$(date --date="today $start_time" +%s 2>/dev/null || echo 0)
+        if [ -n "$end_time" ]; then
+          end_epoch=$(date --date="today $end_time" +%s 2>/dev/null || echo 0)
+        else
+          end_epoch=$((start_epoch + 3600))
+        fi
 
-          if [ -n "$due" ]; then
-            rel_due=$("$HUMANIZE_DATE" "$due" 2>/dev/null || echo "")
-            if [ -n "$rel_due" ]; then
-              list+="- $desc ($rel_due)\n"
-            else
-              list+="- $desc\n"
-            fi
+        # Determine if event is current, upcoming, or past
+        if [ "$now_epoch" -ge "$start_epoch" ] && [ "$now_epoch" -lt "$end_epoch" ]; then
+          # Currently active
+          remaining=$(( (end_epoch - now_epoch) / 60 ))
+          if [ "$remaining" -ge 60 ]; then
+            hours=$((remaining / 60))
+            mins=$((remaining % 60))
+            time_str="''${hours}h''${mins}m left"
           else
-            list+="- $desc\n"
+            time_str="''${remaining}m left"
           fi
-        done < <(echo "$all_due_tasks" | jq -c '.[]' | head -n5)
 
-        notify-send -u critical -t 10000 "Taskwarrior Reminder" "$msg\n\n$list"
+          if [ -z "$current_event" ]; then
+            current_event="$title"
+            current_remaining="$time_str"
+          fi
+
+          tooltip+="<span foreground='#9ccfd8'><b>$start_time-$end_time</b></span>  <b>$title</b> <span size='small' foreground='#9ccfd8'>($time_str)</span>&#10;"
+
+        elif [ "$now_epoch" -lt "$start_epoch" ]; then
+          # Upcoming
+          until_start=$(( (start_epoch - now_epoch) / 60 ))
+          if [ "$until_start" -ge 60 ]; then
+            hours=$((until_start / 60))
+            mins=$((until_start % 60))
+            time_str="in ''${hours}h''${mins}m"
+          else
+            time_str="in ''${until_start}m"
+          fi
+
+          if [ -z "$current_event" ] && [ -z "$next_event" ]; then
+            next_event="$title"
+            next_start_diff="$time_str"
+          fi
+
+          tooltip+="<span foreground='#f6c177'>$start_time-$end_time</span>  $title <span size='small' alpha='60%'>($time_str)</span>&#10;"
+
+        else
+          # Past
+          tooltip+="<span alpha='50%'>$start_time-$end_time  $title</span>&#10;"
+        fi
+      done <<< "$events"
+
+      # Determine bar text
+      if [ -n "$current_event" ]; then
+        # Truncate long titles
+        display_title="$current_event"
+        if [ ''${#display_title} -gt 25 ]; then
+          display_title="''${display_title:0:23}.."
+        fi
+        output_json "$CAL_ICON $display_title ($current_remaining)" "active" "$tooltip"
+      elif [ -n "$next_event" ]; then
+        display_title="$next_event"
+        if [ ''${#display_title} -gt 25 ]; then
+          display_title="''${display_title:0:23}.."
+        fi
+        output_json "$CAL_ICON $display_title ($next_start_diff)" "upcoming" "$tooltip"
+      else
+        output_json "$CAL_ICON" "default" "$tooltip"
       fi
     '';
   };
 
-  # Taskwarrior notification timer
-  systemd.user.services.taskwarrior-notify = {
-    Unit.Description = "Taskwarrior due task notifications";
-    Service = {
-      Type = "oneshot";
-      ExecStart = "%h/.config/waybar/scripts/taskwarrior-notify.sh";
-    };
-  };
+  # Khal configuration
+  xdg.configFile."khal/config".text = ''
+    [calendars]
 
-  systemd.user.timers.taskwarrior-notify = {
-    Unit.Description = "Run Taskwarrior notifications every 5 minutes";
-    Timer = {
-      OnBootSec = "1min";
-      OnUnitActiveSec = "15min";
-      Unit = "taskwarrior-notify.service";
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
+    [[personal]]
+    path = ~/.local/share/khal/calendars/personal/
+    color = light magenta
+    type = calendar
+
+    [[routine]]
+    path = ~/.local/share/khal/calendars/routine/
+    color = dark cyan
+    type = calendar
+    readonly = true
+
+    [locale]
+    timeformat = %H:%M
+    dateformat = %Y-%m-%d
+    longdateformat = %Y-%m-%d
+    datetimeformat = %Y-%m-%d %H:%M
+    longdatetimeformat = %Y-%m-%d %H:%M
+
+    [default]
+    default_calendar = personal
+    highlight_event_days = true
+  '';
+  xdg.configFile."khal/config".force = true;
 
   # Wofi config
   xdg.configFile."wofi/config".text = ''

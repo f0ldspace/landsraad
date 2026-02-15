@@ -26,6 +26,8 @@
     ../../modules/restic-backups.nix
     ../../modules/searxng.nix
     ../../modules/mediawiki.nix
+    ../../modules/privatebin.nix
+    ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
     ../../modules/desktop/niri.nix

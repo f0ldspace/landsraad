@@ -21,5 +21,6 @@
     newsboat
     taskwarrior3
     taskwarrior-tui
+    khal
   ];
 }

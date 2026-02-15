@@ -7,8 +7,8 @@
 {
   services.mediawiki = {
     enable = true;
-    name = "Landsraad";
-    url = "http://localhost:8080";
+    name = "wiki";
+    url = "https://wiki.arrakis.computer";
     # Create this file with: echo "your-secure-password" | sudo tee /etc/mediawiki/admin-password
     # Admin username is "admin"
     passwordFile = "/etc/mediawiki/admin-password";
@@ -23,6 +23,7 @@
     nginx.hostName = "localhost";
 
     extensions = {
+      SyntaxHighlight_GeSHi = null;
       VisualEditor = null;
       ParserFunctions = null;
       Cite = null;
@@ -36,6 +37,12 @@
 
       # Allow file uploads
       $wgEnableUploads = true;
+
+      # Allow anonymous reading, require login to edit
+      $wgGroupPermissions['*']['read'] = true;
+      $wgGroupPermissions['*']['edit'] = false;
+      $wgGroupPermissions['*']['createaccount'] = false;
+      $wgGroupPermissions['user']['edit'] = true;
     '';
   };
 

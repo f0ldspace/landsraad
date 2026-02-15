@@ -306,6 +306,18 @@ EOF
     info "/etc/wakapi/secrets.env already exists"
   fi
 
+  sudo mkdir -p /etc/ntfy
+
+  if [[ ! -f /etc/ntfy/topic ]]; then
+    sudo tee /etc/ntfy/topic >/dev/null <<'EOF'
+your_ntfy_topic_here
+EOF
+    sudo chmod 600 /etc/ntfy/topic
+    success "Created /etc/ntfy/topic placeholder"
+  else
+    info "/etc/ntfy/topic already exists"
+  fi
+
   if [[ ! -f "$TARGET_HOME/.wakatime.cfg" ]]; then
     cat >"$TARGET_HOME/.wakatime.cfg" <<'EOF'
 [settings]
@@ -344,6 +356,7 @@ print_summary() {
   echo "   - /etc/restic/b2-env      (Backblaze B2 credentials)"
   echo "   - /etc/restic/password    (Restic encryption password)"
   echo "   - /etc/wakapi/secrets.env (Wakapi password salt)"
+  echo "   - /etc/ntfy/topic         (ntfy notification topic)"
   echo "   - ~/.wakatime.cfg         (WakaTime/Wakapi API key)"
   echo ""
   echo "3. Add icon files to ~/.icons/ (if using websites.nix):"
