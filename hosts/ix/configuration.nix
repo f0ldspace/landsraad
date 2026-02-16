@@ -123,7 +123,15 @@
 
   # NOTE: SOFTWARE
   environment.systemPackages = with pkgs; [
-    protonmail-desktop
+    (pkgs.symlinkJoin {
+      name = "protonmail-desktop";
+      paths = [ pkgs.protonmail-desktop ];
+      buildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/proton-mail \
+          --add-flags "--ozone-platform=x11"
+      '';
+    })
     wget
     jq
     mat2
