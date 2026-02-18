@@ -316,7 +316,7 @@
 
         modules-left = [
           "niri/workspaces"
-          "custom/khal"
+          "custom/routine"
           "mpris"
           "niri/window"
         ];
@@ -405,13 +405,12 @@
           tooltip = true;
         };
 
-        "custom/khal" = {
+        "custom/routine" = {
           format = "{}";
           return-type = "json";
-          exec = "~/.config/waybar/scripts/khal-status.sh";
+          exec = "~/.config/waybar/scripts/routine-status.sh";
           interval = 60;
           tooltip = true;
-          on-click = "alacritty --title Calendar -e khal interactive";
         };
 
         "custom/worklog" = {
@@ -604,7 +603,7 @@
         color: #f6c177;
       }
 
-      #custom-khal {
+      #custom-routine {
         background-color: #2a273f;
         border-radius: 0;
         padding: 2px 10px;
@@ -613,15 +612,15 @@
         transition: all 0.2s ease;
       }
 
-      #custom-khal:hover {
+      #custom-routine:hover {
         background-color: #393552;
       }
 
-      #custom-khal.active {
+      #custom-routine.active {
         color: #9ccfd8;
       }
 
-      #custom-khal.upcoming {
+      #custom-routine.upcoming {
         color: #f6c177;
       }
 
@@ -890,14 +889,27 @@
     '';
   };
 
-  # Khal calendar Waybar integration
-  home.file.".config/waybar/scripts/khal-status.sh" = {
+   # Routine CSV: days,start_time(HH:MM),event_name,duration_minutes
+  # days: comma-separated weekday abbreviations (Mon,Tue,Wed,Thu,Fri,Sat,Sun) or * for every day
+  home.file.".config/waybar/routine.csv".text = ''
+    Mon,Tue,Wed,Thu,Fri|10:00|Morning Routine|60
+    Mon,Tue,Wed,Thu,Fri|11:00|Free Time|120
+    Mon,Tue,Wed,Thu,Fri|13:00|Light Work|240
+    Mon,Tue,Wed,Thu,Fri|17:00|Free Time|360
+    Mon,Tue,Wed,Thu|23:00|Deep Work|150
+    Tue,Wed,Thu,Fri,Sun|01:30|Evening Routine|30
+    Tue,Wed,Thu,Fri,Sun|02:00|Sleep|480
+  '';
+
+  # Routine Waybar integration
+  home.file.".config/waybar/scripts/routine-status.sh" = {
     executable = true;
     text = ''
       #!/usr/bin/env bash
       set -eEo pipefail
 
       CAL_ICON=$'\uf073'
+      ROUTINE_CSV="$HOME/.config/waybar/routine.csv"
 
       output_json() {
         local text=$1
@@ -907,95 +919,182 @@
         echo "{\"text\":\"$text\",\"class\":\"$class\",\"tooltip\":\"$tooltip\"}"
       }
 
-      now_epoch=$(date +%s)
+      fmt_duration() {
+        local mins=$1
+        if [ "$mins" -ge 60 ]; then
+          local h=$((mins / 60))
+          local m=$((mins % 60))
+          echo "''${h}h''${m}m"
+        else
+          echo "''${mins}m"
+        fi
+      }
 
-      # Get today's events from khal
-      # Format: start-time end-time :: title
-      events=$(khal list --day-format "" --format "{start-time} {end-time} :: {title}" today today 2>/dev/null || echo "")
+      now_mins=$(( $(date +%-H) * 60 + $(date +%-M) ))
+      today=$(date +%a)
 
-      if [ -z "$events" ] || echo "$events" | grep -q "^No events$"; then
-        output_json "$CAL_ICON" "default" "<b>Calendar</b>&#10;&#10;<span alpha='60%'>No events today</span>"
+      if [ ! -f "$ROUTINE_CSV" ]; then
+        output_json "$CAL_ICON" "default" "<b>Routine</b>&#10;&#10;<span alpha='60%'>No routine file found</span>"
         exit 0
       fi
 
-      # Build tooltip with full day agenda
-      tooltip="<b>Calendar</b> <span size='small'>(today)</span>&#10;&#10;"
+      tooltip="<b>Routine</b> <span size='small'>($today)</span>&#10;&#10;"
       current_event=""
       current_remaining=""
       next_event=""
       next_start_diff=""
+      next_start_mins=99999
+
+      # Collect events for today, handling midnight crossover from yesterday
+      declare -a ev_names=()
+      declare -a ev_starts=()
+      declare -a ev_durations=()
 
       while IFS= read -r line; do
+        # Skip empty lines and comments
+        line=$(echo "$line" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
         [ -z "$line" ] && continue
+        [[ "$line" == \#* ]] && continue
 
-        # Parse "HH:MM HH:MM :: title" or "HH:MM  :: title" (all-day)
-        if [[ "$line" =~ ^([0-9]{2}:[0-9]{2})\ ([0-9]{2}:[0-9]{2})\ ::\ (.+)$ ]]; then
-          start_time="''${BASH_REMATCH[1]}"
-          end_time="''${BASH_REMATCH[2]}"
-          title="''${BASH_REMATCH[3]}"
-        elif [[ "$line" =~ ^([0-9]{2}:[0-9]{2})\ +::\ (.+)$ ]]; then
-          start_time="''${BASH_REMATCH[1]}"
-          end_time=""
-          title="''${BASH_REMATCH[2]}"
+        IFS='|' read -r days start_time event_name duration <<< "$line"
+        days=$(echo "$days" | sed 's/[[:space:]]//g')
+        start_time=$(echo "$start_time" | sed 's/[[:space:]]//g')
+        event_name=$(echo "$event_name" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+        duration=$(echo "$duration" | sed 's/[[:space:]]//g')
+
+        # Check if this event runs today
+        match=0
+        if [ "$days" = "*" ]; then
+          match=1
         else
-          # All-day or unparseable event
-          tooltip+="<span foreground='#c4a7e7'>all day</span>  $line&#10;"
-          continue
+          IFS=',' read -ra day_list <<< "$days"
+          for d in "''${day_list[@]}"; do
+            if [ "$d" = "$today" ]; then
+              match=1
+              break
+            fi
+          done
         fi
+        [ "$match" -eq 0 ] && continue
 
-        start_epoch=$(date --date="today $start_time" +%s 2>/dev/null || echo 0)
-        if [ -n "$end_time" ]; then
-          end_epoch=$(date --date="today $end_time" +%s 2>/dev/null || echo 0)
+        # Parse start time to minutes since midnight
+        IFS=':' read -r h m <<< "$start_time"
+        start_mins=$(( 10#$h * 60 + 10#$m ))
+
+        ev_names+=("$event_name")
+        ev_starts+=("$start_mins")
+        ev_durations+=("$duration")
+      done < "$ROUTINE_CSV"
+
+      # Also check yesterday's events that may cross midnight into today
+      yesterday=$(date -d "yesterday" +%a)
+      while IFS= read -r line; do
+        line=$(echo "$line" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+        [ -z "$line" ] && continue
+        [[ "$line" == \#* ]] && continue
+
+        IFS='|' read -r days start_time event_name duration <<< "$line"
+        days=$(echo "$days" | sed 's/[[:space:]]//g')
+        start_time=$(echo "$start_time" | sed 's/[[:space:]]//g')
+        event_name=$(echo "$event_name" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+        duration=$(echo "$duration" | sed 's/[[:space:]]//g')
+
+        match=0
+        if [ "$days" = "*" ]; then
+          match=1
         else
-          end_epoch=$((start_epoch + 3600))
+          IFS=',' read -ra day_list <<< "$days"
+          for d in "''${day_list[@]}"; do
+            if [ "$d" = "$yesterday" ]; then
+              match=1
+              break
+            fi
+          done
         fi
+        [ "$match" -eq 0 ] && continue
 
-        # Determine if event is current, upcoming, or past
-        if [ "$now_epoch" -ge "$start_epoch" ] && [ "$now_epoch" -lt "$end_epoch" ]; then
-          # Currently active
-          remaining=$(( (end_epoch - now_epoch) / 60 ))
-          if [ "$remaining" -ge 60 ]; then
-            hours=$((remaining / 60))
-            mins=$((remaining % 60))
-            time_str="''${hours}h''${mins}m left"
-          else
-            time_str="''${remaining}m left"
-          fi
+        IFS=':' read -r h m <<< "$start_time"
+        start_mins=$(( 10#$h * 60 + 10#$m ))
+        end_mins=$(( start_mins + duration ))
+
+        # Only include if it crosses midnight and is still active now
+        if [ "$end_mins" -gt 1440 ]; then
+          # Represent as a "virtual" event with negative start (started yesterday)
+          virtual_start=$(( start_mins - 1440 ))
+          ev_names+=("$event_name")
+          ev_starts+=("$virtual_start")
+          ev_durations+=("$duration")
+        fi
+      done < "$ROUTINE_CSV"
+
+      # Sort events by start time and process
+      # Create index array for sorting
+      n=''${#ev_names[@]}
+      indices=()
+      for (( i=0; i<n; i++ )); do indices+=("$i"); done
+      # Simple insertion sort by start time
+      for (( i=1; i<n; i++ )); do
+        j=$i
+        while (( j > 0 )) && (( ev_starts[indices[j-1]] > ev_starts[indices[j]] )); do
+          tmp=''${indices[j]}
+          indices[j]=''${indices[j-1]}
+          indices[j-1]=$tmp
+          ((j--))
+        done
+      done
+
+      for idx in "''${indices[@]}"; do
+        event_name="''${ev_names[$idx]}"
+        start_mins="''${ev_starts[$idx]}"
+        duration="''${ev_durations[$idx]}"
+        end_mins=$(( start_mins + duration ))
+
+        # Format display times (handle negative/overflow for display)
+        disp_start_h=$(( ((start_mins % 1440) + 1440) % 1440 / 60 ))
+        disp_start_m=$(( ((start_mins % 1440) + 1440) % 1440 % 60 ))
+        disp_end_h=$(( ((end_mins % 1440) + 1440) % 1440 / 60 ))
+        disp_end_m=$(( ((end_mins % 1440) + 1440) % 1440 % 60 ))
+        start_fmt=$(printf "%02d:%02d" $disp_start_h $disp_start_m)
+        end_fmt=$(printf "%02d:%02d" $disp_end_h $disp_end_m)
+
+        if [ "$now_mins" -ge "$start_mins" ] && [ "$now_mins" -lt "$end_mins" ]; then
+          # Active
+          remaining=$(( end_mins - now_mins ))
+          time_str="$(fmt_duration $remaining) left"
 
           if [ -z "$current_event" ]; then
-            current_event="$title"
+            current_event="$event_name"
             current_remaining="$time_str"
           fi
 
-          tooltip+="<span foreground='#9ccfd8'><b>$start_time-$end_time</b></span>  <b>$title</b> <span size='small' foreground='#9ccfd8'>($time_str)</span>&#10;"
+          tooltip+="<span foreground='#9ccfd8'><b>$start_fmt-$end_fmt</b></span>  <b>$event_name</b> <span size='small' foreground='#9ccfd8'>($time_str)</span>&#10;"
 
-        elif [ "$now_epoch" -lt "$start_epoch" ]; then
+        elif [ "$now_mins" -lt "$start_mins" ]; then
           # Upcoming
-          until_start=$(( (start_epoch - now_epoch) / 60 ))
-          if [ "$until_start" -ge 60 ]; then
-            hours=$((until_start / 60))
-            mins=$((until_start % 60))
-            time_str="in ''${hours}h''${mins}m"
-          else
-            time_str="in ''${until_start}m"
-          fi
+          until_start=$(( start_mins - now_mins ))
+          time_str="in $(fmt_duration $until_start)"
 
-          if [ -z "$current_event" ] && [ -z "$next_event" ]; then
-            next_event="$title"
+          if [ -z "$current_event" ] && [ "$start_mins" -lt "$next_start_mins" ]; then
+            next_event="$event_name"
             next_start_diff="$time_str"
+            next_start_mins=$start_mins
           fi
 
-          tooltip+="<span foreground='#f6c177'>$start_time-$end_time</span>  $title <span size='small' alpha='60%'>($time_str)</span>&#10;"
+          tooltip+="<span foreground='#f6c177'>$start_fmt-$end_fmt</span>  $event_name <span size='small' alpha='60%'>($time_str)</span>&#10;"
 
         else
           # Past
-          tooltip+="<span alpha='50%'>$start_time-$end_time  $title</span>&#10;"
+          tooltip+="<span alpha='50%'>$start_fmt-$end_fmt  $event_name</span>&#10;"
         fi
-      done <<< "$events"
+      done
+
+      if [ "$n" -eq 0 ]; then
+        output_json "$CAL_ICON" "default" "<b>Routine</b>&#10;&#10;<span alpha='60%'>No routine today</span>"
+        exit 0
+      fi
 
       # Determine bar text
       if [ -n "$current_event" ]; then
-        # Truncate long titles
         display_title="$current_event"
         if [ ''${#display_title} -gt 25 ]; then
           display_title="''${display_title:0:23}.."
@@ -1012,34 +1111,6 @@
       fi
     '';
   };
-
-  # Khal configuration
-  xdg.configFile."khal/config".text = ''
-    [calendars]
-
-    [[personal]]
-    path = ~/.local/share/khal/calendars/personal/
-    color = light magenta
-    type = calendar
-
-    [[routine]]
-    path = ~/.local/share/khal/calendars/routine/
-    color = dark cyan
-    type = calendar
-    readonly = true
-
-    [locale]
-    timeformat = %H:%M
-    dateformat = %Y-%m-%d
-    longdateformat = %Y-%m-%d
-    datetimeformat = %Y-%m-%d %H:%M
-    longdatetimeformat = %Y-%m-%d %H:%M
-
-    [default]
-    default_calendar = personal
-    highlight_event_days = true
-  '';
-  xdg.configFile."khal/config".force = true;
 
   # Wofi config
   xdg.configFile."wofi/config".text = ''

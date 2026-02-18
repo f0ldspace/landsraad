@@ -14,7 +14,6 @@
     ./finance.nix
     ./productivity.nix
     ./websites.nix
-    ../../modules/gaming.nix
     # Shared modules
     ../../modules/programming.nix
     ../../modules/ai.nix
@@ -24,12 +23,6 @@
     ../../modules/audiobookshelf-server.nix
     ../../modules/navidrone.nix
     ../../modules/restic-backups.nix
-    ../../modules/miniflux.nix
-    #../../modules/uptime-kuma.nix
-    ../../modules/searxng.nix
-    ../../modules/mediawiki.nix
-    ../../modules/privatebin.nix
-    ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
     ../../modules/desktop/niri.nix
@@ -38,15 +31,11 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
-  boot.kernelModules = [ "v4l2loopback" ];
   hardware.keyboard.qmk.enable = true;
   services.udev.extraRules = ''
     # Via/QMK keyboard access
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
   '';
-  hardware.logitech.wireless.enable = true;
-  hardware.logitech.wireless.enableGraphical = true; # pulls in Solaar
 
   nix.gc = {
     automatic = true;
@@ -54,7 +43,7 @@
     options = "--delete-older-than 14d";
   };
 
-  networking.hostName = "ix"; # Define your hostname.
+  networking.hostName = "gesserit";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   system.nixos.label = "landsraad";
 
@@ -111,6 +100,7 @@
     ];
   };
   programs.firefox.enable = true;
+  programs.steam.enable = true;
   nixpkgs.config.allowUnfree = true;
   environment.variables.EDITOR = "trinity";
   services.flatpak.enable = true;
@@ -125,16 +115,9 @@
 
   # NOTE: SOFTWARE
   environment.systemPackages = with pkgs; [
-    (pkgs.symlinkJoin {
-      name = "protonmail-desktop";
-      paths = [ pkgs.protonmail-desktop ];
-      buildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/proton-mail \
-          --add-flags "--ozone-platform=x11"
-      '';
-    })
+    protonmail-desktop
     wget
+    openspeedrun
     jq
     mat2
     ungoogled-chromium
@@ -145,6 +128,7 @@
     localsend
     libation
     exiftool
+    prismlauncher
     (wrapOBS {
       plugins = with obs-studio-plugins; [
         obs-retro-effects

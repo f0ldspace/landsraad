@@ -109,11 +109,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771132481,
-        "narHash": "sha256-Tc+YqZ/Q1K35vJK4ji4RbLB/qKGcEq6yh7p4CKoZF60=",
+        "lastModified": 1771411804,
+        "narHash": "sha256-bWHN38fKAbuyrIm6MzTVMOU93rCxFUOKumlWvtwUzLs=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "1e53254671f36cb7d0e2dcca08730f066d5e69b4",
+        "rev": "77c47a454236cede268990eb3e457f062014f414",
         "type": "github"
       },
       "original": {
@@ -291,8 +291,8 @@
         "nixvim": "nixvim_2"
       },
       "locked": {
-        "lastModified": 1770540263,
-        "narHash": "sha256-c1cJKnWfGpux2t0Iu1OOwWT5vHngtLestC8vOivfHLM=",
+        "lastModified": 1771266762,
+        "narHash": "sha256-lwV1Z5yQMlwmNzLLHjteKCPHRCpRATnkQtayO6m5Hs0=",
         "path": "/home/f0ld/trinity",
         "type": "path"
       },
@@ -308,11 +308,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771130449,
-        "narHash": "sha256-4aKnr603xOLsTsPB4vQqPLpeze4n+9tURz0IK48ZJ4E=",
+        "lastModified": 1771303137,
+        "narHash": "sha256-CQ0j9kovzdO6pAjesebt6uxkcFsjbhENVrengRvKpUc=",
         "owner": "youwen5",
         "repo": "zen-browser-flake",
-        "rev": "105bcb6a016ecc4327f24fc0e9e9aba1da53b33b",
+        "rev": "271488f067d8452dd0494b650e2e263ac4104e06",
         "type": "github"
       },
       "original": {

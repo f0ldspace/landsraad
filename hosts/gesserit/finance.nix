@@ -10,16 +10,9 @@
 }:
 {
   environment.systemPackages = with pkgs; [
-    typst
-    tinymist
-    slack
-    anki
-    speedtest-cli
-    imagemagick
-    wikit
-    glow
-    newsboat
-    taskwarrior3
-    taskwarrior-tui
+    monero-gui
+    trezor-suite
+    cgt-calc
+    railway-wallet
   ];
 }
