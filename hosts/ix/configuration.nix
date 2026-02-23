@@ -24,11 +24,11 @@
     ../../modules/audiobookshelf-server.nix
     ../../modules/navidrone.nix
     ../../modules/restic-backups.nix
-    ../../modules/miniflux.nix
+    #../../modules/miniflux.nix
     #../../modules/searxng.nix
     #../../modules/mediawiki.nix
     ../../modules/privatebin.nix
-    ../../modules/shiori.nix
+    #../../modules/shiori.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
@@ -160,7 +160,6 @@
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
     waypaper
-    via
     ffmpeg
     joplin-desktop
     runelite

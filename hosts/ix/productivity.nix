@@ -18,7 +18,6 @@
     imagemagick
     wikit
     glow
-    newsboat
     taskwarrior3
     taskwarrior-tui
   ];
