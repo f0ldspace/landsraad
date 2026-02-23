@@ -25,10 +25,10 @@
     ../../modules/navidrone.nix
     ../../modules/restic-backups.nix
     ../../modules/miniflux.nix
-    #../../modules/uptime-kuma.nix
-    ../../modules/searxng.nix
-    ../../modules/mediawiki.nix
+    #../../modules/searxng.nix
+    #../../modules/mediawiki.nix
     ../../modules/privatebin.nix
+    ../../modules/shiori.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix

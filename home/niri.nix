@@ -312,11 +312,11 @@
         layer = "top";
         position = "top";
         height = 24;
-        spacing = 8;
+        spacing = 4;
 
         modules-left = [
           "niri/workspaces"
-          "custom/routine"
+          "custom/taskwarrior"
           "mpris"
           "niri/window"
         ];
@@ -405,11 +405,13 @@
           tooltip = true;
         };
 
-        "custom/routine" = {
+        "custom/taskwarrior" = {
           format = "{}";
           return-type = "json";
-          exec = "~/.config/waybar/scripts/routine-status.sh";
-          interval = 60;
+          exec = "~/.config/waybar/scripts/taskwarrior-status.sh";
+          on-click = "~/.config/waybar/scripts/taskwarrior-status.sh shownext";
+          on-click-right = "~/.config/waybar/scripts/taskwarrior-status.sh censor";
+          interval = 5;
           tooltip = true;
         };
 
@@ -603,7 +605,7 @@
         color: #f6c177;
       }
 
-      #custom-routine {
+      #custom-taskwarrior {
         background-color: #2a273f;
         border-radius: 0;
         padding: 2px 10px;
@@ -612,16 +614,20 @@
         transition: all 0.2s ease;
       }
 
-      #custom-routine:hover {
+      #custom-taskwarrior:hover {
         background-color: #393552;
       }
 
-      #custom-routine.active {
+      #custom-taskwarrior.active {
         color: #9ccfd8;
       }
 
-      #custom-routine.upcoming {
+      #custom-taskwarrior.upcoming {
         color: #f6c177;
+      }
+
+      #custom-taskwarrior.overdue {
+        color: #eb6f92;
       }
 
       tooltip {
@@ -889,27 +895,32 @@
     '';
   };
 
-   # Routine CSV: days,start_time(HH:MM),event_name,duration_minutes
-  # days: comma-separated weekday abbreviations (Mon,Tue,Wed,Thu,Fri,Sat,Sun) or * for every day
-  home.file.".config/waybar/routine.csv".text = ''
-    Mon,Tue,Wed,Thu,Fri|10:00|Morning Routine|60
-    Mon,Tue,Wed,Thu,Fri|11:00|Free Time|120
-    Mon,Tue,Wed,Thu,Fri|13:00|Light Work|240
-    Mon,Tue,Wed,Thu,Fri|17:00|Free Time|360
-    Mon,Tue,Wed,Thu|23:00|Deep Work|150
-    Tue,Wed,Thu,Fri,Sun|01:30|Evening Routine|30
-    Tue,Wed,Thu,Fri,Sun|02:00|Sleep|480
-  '';
-
-  # Routine Waybar integration
-  home.file.".config/waybar/scripts/routine-status.sh" = {
+  # Taskwarrior Waybar integration
+  home.file.".config/waybar/scripts/taskwarrior-status.sh" = {
     executable = true;
     text = ''
       #!/usr/bin/env bash
       set -eEo pipefail
 
       CAL_ICON=$'\uf073'
-      ROUTINE_CSV="$HOME/.config/waybar/routine.csv"
+      CENSOR_FILE="/tmp/waybar-task-censor"
+      SHOWNEXT_FILE="/tmp/waybar-task-shownext"
+      SHOWNEXT_DURATION=5
+
+      # Handle click actions
+      if [ "$1" = "censor" ]; then
+        if [ -f "$CENSOR_FILE" ]; then
+          rm -f "$CENSOR_FILE"
+        else
+          touch "$CENSOR_FILE"
+        fi
+        exit 0
+      fi
+
+      if [ "$1" = "shownext" ]; then
+        touch "$SHOWNEXT_FILE"
+        exit 0
+      fi
 
       output_json() {
         local text=$1
@@ -920,194 +931,173 @@
       }
 
       fmt_duration() {
-        local mins=$1
-        if [ "$mins" -ge 60 ]; then
-          local h=$((mins / 60))
-          local m=$((mins % 60))
+        local total_mins=$1
+        local abs_mins=''${total_mins#-}
+        
+        if [ "$abs_mins" -ge 1440 ]; then
+          local d=$((abs_mins / 1440))
+          local h=$(((abs_mins % 1440) / 60))
+          echo "''${d}d''${h}h"
+        elif [ "$abs_mins" -ge 60 ]; then
+          local h=$((abs_mins / 60))
+          local m=$((abs_mins % 60))
           echo "''${h}h''${m}m"
         else
-          echo "''${mins}m"
+          echo "''${abs_mins}m"
         fi
       }
 
-      now_mins=$(( $(date +%-H) * 60 + $(date +%-M) ))
-      today=$(date +%a)
+      # Convert taskwarrior date format (20260228T235959Z) to epoch
+      tw_date_to_epoch() {
+        local tw_date=$1
+        # Convert 20260228T235959Z to 2026-02-28T23:59:59Z
+        local iso_date=$(echo "$tw_date" | sed 's/\([0-9]\{4\}\)\([0-9]\{2\}\)\([0-9]\{2\}\)T\([0-9]\{2\}\)\([0-9]\{2\}\)\([0-9]\{2\}\)Z/\1-\2-\3T\4:\5:\6Z/')
+        date -d "$iso_date" +%s 2>/dev/null || echo 0
+      }
 
-      if [ ! -f "$ROUTINE_CSV" ]; then
-        output_json "$CAL_ICON" "default" "<b>Routine</b>&#10;&#10;<span alpha='60%'>No routine file found</span>"
-        exit 0
+      # Check state flags
+      censor_mode=0
+      [ -f "$CENSOR_FILE" ] && censor_mode=1
+
+      shownext_mode=0
+      if [ -f "$SHOWNEXT_FILE" ]; then
+        shownext_mtime=$(stat -c %Y "$SHOWNEXT_FILE" 2>/dev/null || echo 0)
+        now=$(date +%s)
+        if [ $((now - shownext_mtime)) -lt $SHOWNEXT_DURATION ]; then
+          shownext_mode=1
+        else
+          rm -f "$SHOWNEXT_FILE"
+        fi
       fi
 
-      tooltip="<b>Routine</b> <span size='small'>($today)</span>&#10;&#10;"
-      current_event=""
-      current_remaining=""
-      next_event=""
-      next_start_diff=""
-      next_start_mins=99999
+      # Get active task (started)
+      active_task=$(task +ACTIVE export 2>/dev/null | jq -r '.[0] // empty')
+      
+      # Get next task by due date (only tasks with due dates)
+      next_due_task=$(task +PENDING due.any: export 2>/dev/null | jq -r 'sort_by(.due) | .[0] // empty')
 
-      # Collect events for today, handling midnight crossover from yesterday
-      declare -a ev_names=()
-      declare -a ev_starts=()
-      declare -a ev_durations=()
+      # Get upcoming tasks for tooltip (top 10 by due date)
+      upcoming_tasks=$(task +PENDING due.any: export 2>/dev/null | jq -r 'sort_by(.due) | .[0:10]')
 
-      while IFS= read -r line; do
-        # Skip empty lines and comments
-        line=$(echo "$line" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-        [ -z "$line" ] && continue
-        [[ "$line" == \#* ]] && continue
+      # Build tooltip
+      tooltip="<b>Tasks</b>&#10;&#10;"
+      
+      if [ -n "$active_task" ] && [ "$active_task" != "null" ]; then
+        active_desc=$(echo "$active_task" | jq -r '.description // "Unknown"')
+        active_start=$(echo "$active_task" | jq -r '.start // empty')
+        if [ -n "$active_start" ]; then
+          start_epoch=$(tw_date_to_epoch "$active_start")
+          now_epoch=$(date +%s)
+          elapsed_mins=$(( (now_epoch - start_epoch) / 60 ))
+          elapsed_str=$(fmt_duration $elapsed_mins)
+          tooltip+="<span foreground='#9ccfd8'><b>Active:</b></span> $active_desc <span size='small' foreground='#9ccfd8'>($elapsed_str)</span>&#10;&#10;"
+        fi
+      fi
 
-        IFS='|' read -r days start_time event_name duration <<< "$line"
-        days=$(echo "$days" | sed 's/[[:space:]]//g')
-        start_time=$(echo "$start_time" | sed 's/[[:space:]]//g')
-        event_name=$(echo "$event_name" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-        duration=$(echo "$duration" | sed 's/[[:space:]]//g')
-
-        # Check if this event runs today
-        match=0
-        if [ "$days" = "*" ]; then
-          match=1
-        else
-          IFS=',' read -ra day_list <<< "$days"
-          for d in "''${day_list[@]}"; do
-            if [ "$d" = "$today" ]; then
-              match=1
-              break
+      # Add upcoming tasks to tooltip
+      task_count=$(echo "$upcoming_tasks" | jq -r 'length')
+      if [ "$task_count" -gt 0 ]; then
+        tooltip+="<b>Upcoming:</b>&#10;"
+        for i in $(seq 0 $((task_count - 1))); do
+          task_item=$(echo "$upcoming_tasks" | jq -r ".[$i]")
+          desc=$(echo "$task_item" | jq -r '.description // "Unknown"')
+          due=$(echo "$task_item" | jq -r '.due // empty')
+          project=$(echo "$task_item" | jq -r '.project // empty')
+          
+          if [ -n "$due" ]; then
+            due_epoch=$(tw_date_to_epoch "$due")
+            now_epoch=$(date +%s)
+            diff_mins=$(( (due_epoch - now_epoch) / 60 ))
+            
+            if [ $diff_mins -lt 0 ]; then
+              time_str="<span foreground='#eb6f92'>overdue by $(fmt_duration $diff_mins)</span>"
+            else
+              time_str="in $(fmt_duration $diff_mins)"
             fi
-          done
-        fi
-        [ "$match" -eq 0 ] && continue
-
-        # Parse start time to minutes since midnight
-        IFS=':' read -r h m <<< "$start_time"
-        start_mins=$(( 10#$h * 60 + 10#$m ))
-
-        ev_names+=("$event_name")
-        ev_starts+=("$start_mins")
-        ev_durations+=("$duration")
-      done < "$ROUTINE_CSV"
-
-      # Also check yesterday's events that may cross midnight into today
-      yesterday=$(date -d "yesterday" +%a)
-      while IFS= read -r line; do
-        line=$(echo "$line" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-        [ -z "$line" ] && continue
-        [[ "$line" == \#* ]] && continue
-
-        IFS='|' read -r days start_time event_name duration <<< "$line"
-        days=$(echo "$days" | sed 's/[[:space:]]//g')
-        start_time=$(echo "$start_time" | sed 's/[[:space:]]//g')
-        event_name=$(echo "$event_name" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-        duration=$(echo "$duration" | sed 's/[[:space:]]//g')
-
-        match=0
-        if [ "$days" = "*" ]; then
-          match=1
-        else
-          IFS=',' read -ra day_list <<< "$days"
-          for d in "''${day_list[@]}"; do
-            if [ "$d" = "$yesterday" ]; then
-              match=1
-              break
-            fi
-          done
-        fi
-        [ "$match" -eq 0 ] && continue
-
-        IFS=':' read -r h m <<< "$start_time"
-        start_mins=$(( 10#$h * 60 + 10#$m ))
-        end_mins=$(( start_mins + duration ))
-
-        # Only include if it crosses midnight and is still active now
-        if [ "$end_mins" -gt 1440 ]; then
-          # Represent as a "virtual" event with negative start (started yesterday)
-          virtual_start=$(( start_mins - 1440 ))
-          ev_names+=("$event_name")
-          ev_starts+=("$virtual_start")
-          ev_durations+=("$duration")
-        fi
-      done < "$ROUTINE_CSV"
-
-      # Sort events by start time and process
-      # Create index array for sorting
-      n=''${#ev_names[@]}
-      indices=()
-      for (( i=0; i<n; i++ )); do indices+=("$i"); done
-      # Simple insertion sort by start time
-      for (( i=1; i<n; i++ )); do
-        j=$i
-        while (( j > 0 )) && (( ev_starts[indices[j-1]] > ev_starts[indices[j]] )); do
-          tmp=''${indices[j]}
-          indices[j]=''${indices[j-1]}
-          indices[j-1]=$tmp
-          ((j--))
+            
+            proj_str=""
+            [ -n "$project" ] && proj_str="<span alpha='60%'>[$project]</span> "
+            
+            tooltip+="  $proj_str$desc <span size='small' alpha='60%'>($time_str)</span>&#10;"
+          fi
         done
-      done
+      else
+        tooltip+="<span alpha='60%'>No tasks with due dates</span>"
+      fi
 
-      for idx in "''${indices[@]}"; do
-        event_name="''${ev_names[$idx]}"
-        start_mins="''${ev_starts[$idx]}"
-        duration="''${ev_durations[$idx]}"
-        end_mins=$(( start_mins + duration ))
+      # Determine what to display
+      display_task=""
+      display_time=""
+      display_class="default"
+      is_active=0
 
-        # Format display times (handle negative/overflow for display)
-        disp_start_h=$(( ((start_mins % 1440) + 1440) % 1440 / 60 ))
-        disp_start_m=$(( ((start_mins % 1440) + 1440) % 1440 % 60 ))
-        disp_end_h=$(( ((end_mins % 1440) + 1440) % 1440 / 60 ))
-        disp_end_m=$(( ((end_mins % 1440) + 1440) % 1440 % 60 ))
-        start_fmt=$(printf "%02d:%02d" $disp_start_h $disp_start_m)
-        end_fmt=$(printf "%02d:%02d" $disp_end_h $disp_end_m)
-
-        if [ "$now_mins" -ge "$start_mins" ] && [ "$now_mins" -lt "$end_mins" ]; then
-          # Active
-          remaining=$(( end_mins - now_mins ))
-          time_str="$(fmt_duration $remaining) left"
-
-          if [ -z "$current_event" ]; then
-            current_event="$event_name"
-            current_remaining="$time_str"
+      if [ "$shownext_mode" -eq 1 ] && [ -n "$next_due_task" ] && [ "$next_due_task" != "null" ]; then
+        # Show next due task (forced by click)
+        display_task=$(echo "$next_due_task" | jq -r '.description // "Unknown"')
+        due=$(echo "$next_due_task" | jq -r '.due // empty')
+        if [ -n "$due" ]; then
+          due_epoch=$(tw_date_to_epoch "$due")
+          now_epoch=$(date +%s)
+          diff_mins=$(( (due_epoch - now_epoch) / 60 ))
+          display_time=$(fmt_duration $diff_mins)
+          if [ $diff_mins -lt 0 ]; then
+            display_class="overdue"
+            display_time="-$display_time"
+          else
+            display_class="upcoming"
+            display_time="~$display_time"
           fi
-
-          tooltip+="<span foreground='#9ccfd8'><b>$start_fmt-$end_fmt</b></span>  <b>$event_name</b> <span size='small' foreground='#9ccfd8'>($time_str)</span>&#10;"
-
-        elif [ "$now_mins" -lt "$start_mins" ]; then
-          # Upcoming
-          until_start=$(( start_mins - now_mins ))
-          time_str="in $(fmt_duration $until_start)"
-
-          if [ -z "$current_event" ] && [ "$start_mins" -lt "$next_start_mins" ]; then
-            next_event="$event_name"
-            next_start_diff="$time_str"
-            next_start_mins=$start_mins
-          fi
-
-          tooltip+="<span foreground='#f6c177'>$start_fmt-$end_fmt</span>  $event_name <span size='small' alpha='60%'>($time_str)</span>&#10;"
-
-        else
-          # Past
-          tooltip+="<span alpha='50%'>$start_fmt-$end_fmt  $event_name</span>&#10;"
         fi
-      done
+      elif [ -n "$active_task" ] && [ "$active_task" != "null" ]; then
+        # Show active task
+        display_task=$(echo "$active_task" | jq -r '.description // "Unknown"')
+        start_ts=$(echo "$active_task" | jq -r '.start // empty')
+        if [ -n "$start_ts" ]; then
+          start_epoch=$(tw_date_to_epoch "$start_ts")
+          now_epoch=$(date +%s)
+          elapsed_mins=$(( (now_epoch - start_epoch) / 60 ))
+          display_time="+$(fmt_duration $elapsed_mins)"
+        fi
+        display_class="active"
+        is_active=1
+      elif [ -n "$next_due_task" ] && [ "$next_due_task" != "null" ]; then
+        # Show next due task
+        display_task=$(echo "$next_due_task" | jq -r '.description // "Unknown"')
+        due=$(echo "$next_due_task" | jq -r '.due // empty')
+        if [ -n "$due" ]; then
+          due_epoch=$(tw_date_to_epoch "$due")
+          now_epoch=$(date +%s)
+          diff_mins=$(( (due_epoch - now_epoch) / 60 ))
+          display_time=$(fmt_duration $diff_mins)
+          if [ $diff_mins -lt 0 ]; then
+            display_class="overdue"
+            display_time="-$display_time"
+          else
+            display_class="upcoming"
+            display_time="~$display_time"
+          fi
+        fi
+      fi
 
-      if [ "$n" -eq 0 ]; then
-        output_json "$CAL_ICON" "default" "<b>Routine</b>&#10;&#10;<span alpha='60%'>No routine today</span>"
+      # Build output
+      if [ -z "$display_task" ]; then
+        output_json "$CAL_ICON" "default" "$tooltip"
         exit 0
       fi
 
-      # Determine bar text
-      if [ -n "$current_event" ]; then
-        display_title="$current_event"
-        if [ ''${#display_title} -gt 25 ]; then
-          display_title="''${display_title:0:23}.."
-        fi
-        output_json "$CAL_ICON $display_title ($current_remaining)" "active" "$tooltip"
-      elif [ -n "$next_event" ]; then
-        display_title="$next_event"
-        if [ ''${#display_title} -gt 25 ]; then
-          display_title="''${display_title:0:23}.."
-        fi
-        output_json "$CAL_ICON $display_title ($next_start_diff)" "upcoming" "$tooltip"
+      # Truncate long titles
+      if [ ''${#display_task} -gt 25 ]; then
+        display_task="''${display_task:0:23}.."
+      fi
+
+      # Apply censoring
+      if [ "$censor_mode" -eq 1 ]; then
+        # Create stars matching length
+        censored_task=$(echo "$display_task" | sed 's/./*/g')
+        censored_time="****"
+        output_json "$CAL_ICON $censored_task ($censored_time)" "$display_class" "$tooltip"
       else
-        output_json "$CAL_ICON" "default" "$tooltip"
+        output_json "$CAL_ICON $display_task ($display_time)" "$display_class" "$tooltip"
       fi
     '';
   };
