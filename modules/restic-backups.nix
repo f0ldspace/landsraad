@@ -8,7 +8,25 @@
 {
   services.restic.backups.trinity = {
     repository = "b2:Trinity-Snapshots";
-    paths = [ "/home/${username}" ];
+    paths = [
+      "/home/${username}"
+      # Databases
+      "/var/lib/mysql"
+      "/var/lib/postgresql"
+      # Self-hosted service state
+      "/var/lib/audiobookshelf"
+      "/var/lib/navidrome"
+      "/var/lib/wakapi"
+      "/var/lib/privatebin"
+      # Secrets not in home
+      "/etc/cloudflared"
+      "/etc/restic"
+      "/etc/wakapi"
+      "/etc/ntfy"
+      "/etc/mediawiki/admin-password"
+      # Flatpak apps
+      "/var/lib/flatpak"
+    ];
     environmentFile = "/etc/restic/b2-env";
     passwordFile = "/etc/restic/password";
 
@@ -22,7 +40,6 @@
       "node_modules"
       ".local/share/Trash"
       "Downloads"
-      "Audiobooks"
     ];
 
     pruneOpts = [

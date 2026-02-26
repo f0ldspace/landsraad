@@ -24,9 +24,9 @@
     ../../modules/audiobookshelf-server.nix
     ../../modules/navidrone.nix
     ../../modules/restic-backups.nix
-    #../../modules/miniflux.nix
-    #../../modules/searxng.nix
-    #../../modules/mediawiki.nix
+    ../../modules/miniflux.nix
+    ../../modules/searxng.nix
+    ../../modules/mediawiki.nix
     ../../modules/privatebin.nix
     #../../modules/shiori.nix
     ./ix-cloudflared.nix
