@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
     flake-utils.url = "github:numtide/flake-utils";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -36,6 +37,7 @@
           };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
+            inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
             ./hosts/ix/configuration.nix
             inputs.home-manager.nixosModules.home-manager
             {

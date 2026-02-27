@@ -25,9 +25,10 @@
     ../../modules/navidrone.nix
     ../../modules/restic-backups.nix
     ../../modules/miniflux.nix
-    ../../modules/searxng.nix
+    #../../modules/searxng.nix
     ../../modules/mediawiki.nix
     ../../modules/privatebin.nix
+    ../../modules/open-webui.nix
     #../../modules/shiori.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
@@ -111,6 +112,15 @@
     ];
   };
   programs.firefox.enable = true;
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-vulkan;
+    environmentVariables = {
+      OLLAMA_KV_CACHE_TYPE = "q8_0";
+      OLLAMA_KEEP_ALIVE = "30m";
+    };
+  };
+
   nixpkgs.config.allowUnfree = true;
   environment.variables.EDITOR = "trinity";
   services.flatpak.enable = true;

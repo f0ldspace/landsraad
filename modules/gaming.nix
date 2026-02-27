@@ -13,5 +13,6 @@
     prismlauncher
     osu-lazer
     openspeedrun
+    mangohud
   ];
 }
