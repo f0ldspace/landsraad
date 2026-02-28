@@ -202,6 +202,7 @@
       Mod+D { spawn "wofi" "--show" "drun"; }
       Mod+B { spawn "zen"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
+      Mod+Shift+B { spawn "alacritty" "--class" "blog-todo" "--working-directory" "/home/${username}/blog/todo/" "-e" "trinity"; }
       Mod+S { spawn "flatpak" "run" "net.mkiol.SpeechNote"; }
       Mod+Q { close-window; }
       Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/wiki/" "-e" "opencode" "--agent" "wiki"; }
@@ -933,7 +934,7 @@
       fmt_duration() {
         local total_mins=$1
         local abs_mins=''${total_mins#-}
-        
+
         if [ "$abs_mins" -ge 1440 ]; then
           local d=$((abs_mins / 1440))
           local h=$(((abs_mins % 1440) / 60))
@@ -972,7 +973,7 @@
 
       # Get active task (started)
       active_task=$(task +ACTIVE export 2>/dev/null | jq -r '.[0] // empty')
-      
+
       # Get next task by due date (only tasks with due dates)
       next_due_task=$(task +PENDING due.any: export 2>/dev/null | jq -r 'sort_by(.due) | .[0] // empty')
 
@@ -981,7 +982,7 @@
 
       # Build tooltip
       tooltip="<b>Tasks</b>&#10;&#10;"
-      
+
       if [ -n "$active_task" ] && [ "$active_task" != "null" ]; then
         active_desc=$(echo "$active_task" | jq -r '.description // "Unknown"')
         active_start=$(echo "$active_task" | jq -r '.start // empty')
@@ -1003,21 +1004,21 @@
           desc=$(echo "$task_item" | jq -r '.description // "Unknown"')
           due=$(echo "$task_item" | jq -r '.due // empty')
           project=$(echo "$task_item" | jq -r '.project // empty')
-          
+
           if [ -n "$due" ]; then
             due_epoch=$(tw_date_to_epoch "$due")
             now_epoch=$(date +%s)
             diff_mins=$(( (due_epoch - now_epoch) / 60 ))
-            
+
             if [ $diff_mins -lt 0 ]; then
               time_str="<span foreground='#eb6f92'>overdue by $(fmt_duration $diff_mins)</span>"
             else
               time_str="in $(fmt_duration $diff_mins)"
             fi
-            
+
             proj_str=""
             [ -n "$project" ] && proj_str="<span alpha='60%'>[$project]</span> "
-            
+
             tooltip+="  $proj_str$desc <span size='small' alpha='60%'>($time_str)</span>&#10;"
           fi
         done

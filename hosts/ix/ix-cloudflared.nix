@@ -17,7 +17,6 @@
           "tasks.arrakis.computer" = "http://localhost:7331";
           "paste.arrakis.computer" = "http://localhost:8443";
           "miniflux.arrakis.computer" = "http://localhost:8085";
-          "shiori.arrakis.computer" = "http://localhost:8086";
           "chat.arrakis.computer" = "http://localhost:3050";
         };
       };
