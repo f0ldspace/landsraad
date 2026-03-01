@@ -53,6 +53,11 @@ let
       url = "https://forum.effectivealtruism.org/";
       icon = "ea.png";
     }
+    {
+      name = "mistral-le-chat";
+      url = "https://chat.mistral.ai/chat";
+      icon = "mistral.png";
+    }
   ];
 in
 {

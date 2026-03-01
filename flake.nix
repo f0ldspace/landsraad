@@ -12,6 +12,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    mistral-vibe = {
+      url = "github:mistralai/mistral-vibe";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
     trinity.url = "path:/home/f0ld/trinity";
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
