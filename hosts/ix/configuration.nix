@@ -117,6 +117,7 @@
     environmentVariables = {
       OLLAMA_KV_CACHE_TYPE = "q8_0";
       OLLAMA_KEEP_ALIVE = "30m";
+      OLLAMA_NUM_CTX = "65536";
     };
   };
 
@@ -153,6 +154,7 @@
     qemu_full
     localsend
     libation
+    kdePackages.kdenlive
     exiftool
     (wrapOBS {
       plugins = with obs-studio-plugins; [

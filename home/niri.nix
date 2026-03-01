@@ -199,6 +199,7 @@
       // Mod = Super/Logo key
       Mod+T { spawn "alacritty"; }
       Mod+Shift+T { spawn "bash" "-c" "alacritty --title Taskwarrior -e taskwarrior-tui && task synchronize"; }
+      Mod+N { spawn "makoctl" "mode" "-t" "do-not-disturb"; }
       Mod+D { spawn "wofi" "--show" "drun"; }
       Mod+B { spawn "zen"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
@@ -673,6 +674,10 @@
       padding = "12";
       anchor = "top-right";
       layer = "overlay";
+
+      "mode=do-not-disturb" = {
+        invisible = 1;
+      };
     };
   };
 

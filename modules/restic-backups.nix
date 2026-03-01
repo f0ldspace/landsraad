@@ -17,6 +17,7 @@
       "/var/lib/audiobookshelf"
       "/var/lib/navidrome"
       "/var/lib/wakapi"
+      "/var/lib/private/wakapi"
       "/var/lib/privatebin"
       # Secrets not in home
       "/etc/cloudflared"
