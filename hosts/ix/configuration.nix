@@ -28,7 +28,7 @@
     ../../modules/searxng.nix
     ../../modules/mediawiki.nix
     ../../modules/privatebin.nix
-    ../../modules/open-webui.nix
+    # ../../modules/open-webui.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix

@@ -24,11 +24,6 @@ let
 
   webApps = [
     {
-      name = "OpenwebUI";
-      url = "https://chat.arrakis.computer";
-      icon = "open-webui-light.png";
-    }
-    {
       name = "Lesswrong";
       url = "https://lesswrong.com";
       icon = "lesswrong.png";

@@ -384,8 +384,8 @@
         "nixvim": "nixvim_2"
       },
       "locked": {
-        "lastModified": 1772364070,
-        "narHash": "sha256-N1Q8PY2zxGHaEAEhhhxp7KtW9TMcT4uvtYEHMlE21Ls=",
+        "lastModified": 1772373947,
+        "narHash": "sha256-yua3Dih9HZyUeLdIarMA+CSuPfVBgMM9WQVjZv8xcjY=",
         "path": "/home/f0ld/trinity",
         "type": "path"
       },
