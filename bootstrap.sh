@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
 REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+
 DEFAULT_USER="f0ld"
 TRINITY_REPO="https://github.com/f0ldspace/trinity.git"
 WOFI_REPO="https://github.com/f0ldspace/wofi.git"
@@ -101,9 +101,9 @@ enable_experimental_features() {
       info "experimental-features already configured in $nix_conf"
       return 0
     fi
-    echo "experimental-features = nix-command flakes" >> "$nix_conf"
+    echo "experimental-features = nix-command flakes" >>"$nix_conf"
   else
-    echo "experimental-features = nix-command flakes" > "$nix_conf"
+    echo "experimental-features = nix-command flakes" >"$nix_conf"
   fi
   success "Enabled experimental features (nix-command, flakes) in $nix_conf"
 }
@@ -184,8 +184,8 @@ verify_host_config() {
   echo "=================================================="
 
   # Check that the host exists in flake.nix
-  if ! grep -q "\"$TARGET_HOST\"" "$REPO_ROOT/flake.nix" 2>/dev/null && \
-     ! grep -q "$TARGET_HOST = " "$REPO_ROOT/flake.nix" 2>/dev/null; then
+  if ! grep -q "\"$TARGET_HOST\"" "$REPO_ROOT/flake.nix" 2>/dev/null &&
+    ! grep -q "$TARGET_HOST = " "$REPO_ROOT/flake.nix" 2>/dev/null; then
     warn "Host '$TARGET_HOST' not found in flake.nix"
     warn "You need to add a nixosConfigurations.$TARGET_HOST entry to flake.nix"
     warn "See existing entries (ix, bene) for examples"

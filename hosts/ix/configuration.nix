@@ -9,7 +9,6 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./finance.nix
     ./productivity.nix
@@ -28,7 +27,6 @@
     ../../modules/searxng.nix
     ../../modules/mediawiki.nix
     ../../modules/privatebin.nix
-    # ../../modules/open-webui.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
@@ -133,6 +131,13 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  # NOTE: Mandarin support
+  fonts.packages = with pkgs; [
+    noto-fonts-cjk-sans
+    noto-fonts-cjk-serif
+
+  ];
+
   # NOTE: SOFTWARE
   environment.systemPackages = with pkgs; [
     (pkgs.symlinkJoin {
@@ -147,6 +152,7 @@
     wget
     jq
     mat2
+    atuin
     ungoogled-chromium
     fd
     ripgrep
