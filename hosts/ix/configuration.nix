@@ -157,7 +157,7 @@
     fd
     ripgrep
     bitwarden-desktop
-    qemu_full
+    # qemu_full
     localsend
     libation
     kdePackages.kdenlive

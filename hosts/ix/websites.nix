@@ -40,7 +40,7 @@ let
     }
     {
       name = "audiobookshelf";
-      url = "http://localhost:8000";
+      url = "https://audiobookshelf.arrakis.computer";
       icon = "audiobookshelf.png";
     }
     {

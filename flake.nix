@@ -57,6 +57,7 @@
             {
               nixpkgs.overlays = [
                 (import ./overlays/railway-wallet.nix)
+                (import ./overlays/fix-typeguard-sphinx.nix)
               ];
             }
           ];
