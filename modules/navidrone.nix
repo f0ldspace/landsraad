@@ -14,6 +14,8 @@
       Address = "0.0.0.0";
       Port = 4533;
       MusicFolder = "/home/${username}/Music";
+      DataFolder = "/var/lib/navidrome";
+      CacheFolder = "/var/lib/navidrome/cache";
     };
   };
 

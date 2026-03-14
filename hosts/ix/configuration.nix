@@ -25,7 +25,7 @@
     ../../modules/restic-backups.nix
     ../../modules/miniflux.nix
     ../../modules/searxng.nix
-    ../../modules/mediawiki.nix
+    #../../modules/mediawiki.nix
     ../../modules/privatebin.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
@@ -152,7 +152,8 @@
     wget
     jq
     mat2
-    atuin
+    syncthingtray
+    syncthing
     ungoogled-chromium
     fd
     ripgrep
@@ -170,6 +171,7 @@
       ];
     })
     mpd-mpris
+    picard
     bleachbit
     protonvpn-gui
     ffmpegthumbnailer
