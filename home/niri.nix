@@ -147,7 +147,6 @@
     window-rule {
       match app-id=r#"^org\.gnome\."#
       match app-id="nautilus"
-      match app-id="pavucontrol"
       match app-id="nm-connection-editor"
       match app-id="blueman-manager"
       match title="Open File"
@@ -319,14 +318,14 @@
         modules-left = [
           "niri/workspaces"
           "custom/routine"
-          "custom/taskwarrior"
+          #"custom/taskwarrior"
           "mpris"
-          "niri/window"
+          #"niri/window"
         ];
         modules-center = [ "clock" ];
         modules-right = [
           "custom/wakatime"
-          "custom/worklog"
+          #"custom/worklog"
           "pulseaudio"
           "battery"
           "tray"
@@ -359,7 +358,7 @@
               ""
             ];
           };
-          on-click = "pavucontrol";
+          on-click = "alacritty -e pulsemixer";
         };
 
         battery = {
@@ -940,22 +939,22 @@
           # Define routine phases (in minutes since midnight)
           MORNING_START=$((10 * 60))    # 10:00
           MORNING_END=$((11 * 60))      # 11:00
-          
+
           FREE1_START=$((11 * 60))      # 11:00
           FREE1_END=$((13 * 60))        # 13:00 (1:00 PM)
-          
+
           LIGHTWORK_START=$((13 * 60))   # 13:00 (1:00 PM)
           LIGHTWORK_END=$((17 * 60))    # 17:00 (5:00 PM)
-          
+
           FREE2_START=$((17 * 60))      # 17:00 (5:00 PM)
           FREE2_END=$((23 * 60))        # 23:00 (11:00 PM)
-          
+
           DEEPWORK_START=$((23 * 60))    # 23:00 (11:00 PM)
-          
+
           # For times that span midnight, use minutes since midnight (0-1439)
           BEDTIME_START=$((1 * 60 + 30)) # 01:30 AM (90 minutes)
           BEDTIME_END=$((2 * 60))        # 02:00 AM (120 minutes)
-          
+
           # Determine current phase
           if [[ $CURRENT_TIME -ge $MORNING_START && $CURRENT_TIME -lt $MORNING_END ]]; then
               ICON="☀"
@@ -987,7 +986,7 @@
               LABEL="Sleep"
               TOOLTIP="Sleep Time"
           fi
-          
+
           # Output format
           if [[ "$SHOW_LABEL" == "true" ]]; then
               echo "{\"text\": \"$ICON $LABEL\", \"tooltip\": \"$TOOLTIP\", \"class\": \"routine\"}"

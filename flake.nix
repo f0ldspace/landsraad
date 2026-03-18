@@ -22,6 +22,7 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs-pinned.url = "github:NixOS/nixpkgs/fe416aaedd397cacb33a610b33d60ff2b431b127";
     nixvim = {
       url = "github:nix-community/nixvim";
       # inputs.nixpkgs.follows = "nixpkgs";  # optional but recommended
@@ -39,6 +40,10 @@
           specialArgs = {
             inherit inputs;
             username = "f0ld";
+            pkgs-pinned = import inputs.nixpkgs-pinned {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            };
           };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }

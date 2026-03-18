@@ -79,7 +79,7 @@
     # Utilities
     brightnessctl
     playerctl
-    pavucontrol
+    pulsemixer
     nautilus
     polkit_gnome
     wdisplays

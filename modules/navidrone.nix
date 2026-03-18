@@ -19,6 +19,7 @@
     };
   };
 
+  systemd.services.navidrome.restartTriggers = [ pkgs.navidrome ];
   systemd.services.navidrome.serviceConfig = {
     User = lib.mkForce username;
     Group = lib.mkForce "users";

@@ -4,6 +4,7 @@
   inputs,
   lib,
   username,
+  pkgs-pinned,
   ...
 }:
 
@@ -25,8 +26,10 @@
     ../../modules/restic-backups.nix
     ../../modules/miniflux.nix
     ../../modules/searxng.nix
+    #../../modules/open-webui.nix
     #../../modules/mediawiki.nix
     ../../modules/privatebin.nix
+    ../../modules/forgejo.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
     ../../modules/desktop/gnome.nix
@@ -151,13 +154,13 @@
     })
     wget
     jq
+    element-desktop
     mat2
-    syncthingtray
-    syncthing
+    qemu
     ungoogled-chromium
     fd
     ripgrep
-    bitwarden-desktop
+    pkgs-pinned.bitwarden-desktop
     # qemu_full
     localsend
     libation
