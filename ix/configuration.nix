@@ -14,26 +14,26 @@
     ./finance.nix
     ./productivity.nix
     ./websites.nix
-    ../../modules/gaming.nix
+    ./modules/gaming.nix
     # Shared modules
-    ../../modules/programming.nix
-    ../../modules/ai.nix
+    ./modules/programming.nix
+    ./modules/ai.nix
     # Servers
-    ../../modules/wakapi-server.nix
-    ../../modules/taskwarrior-server.nix
-    ../../modules/audiobookshelf-server.nix
-    ../../modules/navidrone.nix
-    ../../modules/restic-backups.nix
-    ../../modules/miniflux.nix
-    ../../modules/searxng.nix
-    #../../modules/open-webui.nix
-    #../../modules/mediawiki.nix
-    ../../modules/privatebin.nix
-    ../../modules/forgejo.nix
+    ./modules/wakapi-server.nix
+    ./modules/taskwarrior-server.nix
+    ./modules/audiobookshelf-server.nix
+    ./modules/navidrone.nix
+    ./modules/restic-backups.nix
+    ./modules/miniflux.nix
+    ./modules/searxng.nix
+    #./modules/open-webui.nix
+    #./modules/mediawiki.nix
+    ./modules/privatebin.nix
+    ./modules/forgejo.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
-    ../../modules/desktop/gnome.nix
-    ../../modules/desktop/niri.nix
+    ./modules/desktop/gnome.nix
+    ./modules/desktop/niri.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -157,6 +157,8 @@
     element-desktop
     mat2
     qemu
+    libva-utils
+    gparted
     ungoogled-chromium
     fd
     ripgrep

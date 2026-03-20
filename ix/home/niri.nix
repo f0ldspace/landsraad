@@ -188,6 +188,11 @@
     }
 
     window-rule {
+      match app-id="obsidian"
+      default-column-width { proportion 0.3; }
+    }
+
+    window-rule {
       match app-id="wiki-nvim"
       default-column-width { proportion 0.3; }
     }
@@ -317,7 +322,7 @@
 
         modules-left = [
           "niri/workspaces"
-          "custom/routine"
+          #"custom/routine"
           #"custom/taskwarrior"
           "mpris"
           #"niri/window"
@@ -658,7 +663,7 @@
   services.gammastep = {
     enable = true;
     dawnTime = "08:00";
-    duskTime = "20:00";
+    duskTime = "22:00";
     temperature = {
       day = 6500;
       night = 2500;
@@ -770,33 +775,33 @@
   home.file.".local/bin/waybar-wakatime.sh" = {
     executable = true;
     text = ''
-      #!/usr/bin/env bash
-      ICON=$'\uf121'
-      CONFIG="$HOME/.wakatime.cfg"
-      if [ ! -f "$CONFIG" ]; then
-        echo "{\"text\": \"$ICON --\", \"tooltip\": \"No ~/.wakatime.cfg found\", \"class\": \"error\"}"
-        exit 0
-      fi
+        #!/usr/bin/env bash
+        ICON=$'\uf121'
+        CONFIG="$HOME/.wakatime.cfg"
+        if [ ! -f "$CONFIG" ]; then
+          echo "{\"text\": \"$ICON --\", \"tooltip\": \"No ~/.wakatime.cfg found\", \"class\": \"error\"}"
+          exit 0
+        fi
 
-      API_KEY=$(grep -oP '^\s*api_key\s*=\s*\K\S+' "$CONFIG")
-      API_URL=$(grep -oP '^\s*api_url\s*=\s*\K\S+' "$CONFIG")
-      API_URL="''${API_URL:-http://localhost:3040/api}"
+        API_KEY=$(grep -oP '^\s*api_key\s*=\s*\K\S+' "$CONFIG")
+        API_URL=$(grep -oP '^\s*api_url\s*=\s*\K\S+' "$CONFIG")
+        API_URL="''${API_URL:-http://localhost:3040/api}"
 
-      if [ -z "$API_KEY" ]; then
-        echo "{\"text\": \"$ICON --\", \"tooltip\": \"No api_key in ~/.wakatime.cfg\", \"class\": \"error\"}"
-        exit 0
-      fi
+        if [ -z "$API_KEY" ]; then
+          echo "{\"text\": \"$ICON --\", \"tooltip\": \"No api_key in ~/.wakatime.cfg\", \"class\": \"error\"}"
+          exit 0
+        fi
 
-      TODAY=$(date +%Y-%m-%d)
-      RESPONSE=$(curl -sf -H "Authorization: Basic $(echo -n "$API_KEY" | base64)" \
-        "''${API_URL}/compat/wakatime/v1/users/current/summaries?start=$TODAY&end=$TODAY" 2>/dev/null)
+        TODAY=$(date +%Y-%m-%d)
+        RESPONSE=$(curl -sf -H "Authorization: Basic $(echo -n "$API_KEY" | base64)" \
+          "''${API_URL}/compat/wakatime/v1/users/current/summaries?start=$TODAY&end=$TODAY" 2>/dev/null)
 
-      if [ $? -ne 0 ] || [ -z "$RESPONSE" ]; then
-        echo "{\"text\": \"$ICON --\", \"tooltip\": \"Wakapi unreachable\", \"class\": \"error\"}"
-        exit 0
-      fi
+        if [ $? -ne 0 ] || [ -z "$RESPONSE" ]; then
+          echo "{\"text\": \"$ICON --\", \"tooltip\": \"Wakapi unreachable\", \"class\": \"error\"}"
+          exit 0
+        fi
 
-      TOTAL_SECS=$(echo "$RESPONSE" | jq -r '(.data[0].editors[] | select(.name == "Neovim") | .total_seconds) // 0')
+      TOTAL_SECS=$(echo "$RESPONSE" | jq -r '([.data[0].editors[] | select(.name == "Neovim" or .name == "Unknown") | .total_seconds] | add) // 0')
       TOTAL_SECS=''${TOTAL_SECS%.*}
       HOURS=$((TOTAL_SECS / 3600))
       MINS=$(( (TOTAL_SECS % 3600) / 60 ))
@@ -907,96 +912,6 @@
         daemon)  cmd_daemon ;;
         *)       echo "Usage: $0 {toggle|pause|compile|status|daemon}" ;;
       esac
-    '';
-  };
-
-  # Daily Routine Waybar integration
-  home.file.".config/waybar/scripts/daily-routine.sh" = {
-    executable = true;
-    text = ''
-      #!/usr/bin/env bash
-      # Daily Routine Script for Waybar
-      # Shows current routine phase with emoji icon
-
-      # Configuration
-      SHOW_LABEL_FILE="/tmp/waybar-routine-show-label"
-
-      # Check if we should show label or just icon
-      if [[ -f "$SHOW_LABEL_FILE" ]]; then
-          SHOW_LABEL=$(cat "$SHOW_LABEL_FILE")
-      else
-          SHOW_LABEL="false"
-      fi
-
-      # Get current day and time
-      DAY_OF_WEEK="''${DAY_OF_WEEK-"$(date +%u)"}"  # 1-7 (Monday-Sunday)
-      CURRENT_HOUR="''${CURRENT_HOUR-"$(date +%H)"}"
-      CURRENT_MIN="''${CURRENT_MIN-"$(date +%M)"}"
-      CURRENT_TIME=$((CURRENT_HOUR * 60 + CURRENT_MIN))
-
-      # Only show routine on weekdays (Monday-Friday, 1-5)
-      if [[ $DAY_OF_WEEK -ge 1 && $DAY_OF_WEEK -le 5 ]]; then
-          # Define routine phases (in minutes since midnight)
-          MORNING_START=$((10 * 60))    # 10:00
-          MORNING_END=$((11 * 60))      # 11:00
-
-          FREE1_START=$((11 * 60))      # 11:00
-          FREE1_END=$((13 * 60))        # 13:00 (1:00 PM)
-
-          LIGHTWORK_START=$((13 * 60))   # 13:00 (1:00 PM)
-          LIGHTWORK_END=$((17 * 60))    # 17:00 (5:00 PM)
-
-          FREE2_START=$((17 * 60))      # 17:00 (5:00 PM)
-          FREE2_END=$((23 * 60))        # 23:00 (11:00 PM)
-
-          DEEPWORK_START=$((23 * 60))    # 23:00 (11:00 PM)
-
-          # For times that span midnight, use minutes since midnight (0-1439)
-          BEDTIME_START=$((1 * 60 + 30)) # 01:30 AM (90 minutes)
-          BEDTIME_END=$((2 * 60))        # 02:00 AM (120 minutes)
-
-          # Determine current phase
-          if [[ $CURRENT_TIME -ge $MORNING_START && $CURRENT_TIME -lt $MORNING_END ]]; then
-              ICON="☀"
-              LABEL="Morning Routine"
-              TOOLTIP="10:00-11:00: Morning Routine"
-          elif [[ $CURRENT_TIME -ge $FREE1_START && $CURRENT_TIME -lt $FREE1_END ]]; then
-              ICON="▲"
-              LABEL="Free Time"
-              TOOLTIP="11:00-13:00: Free Time"
-          elif [[ $CURRENT_TIME -ge $LIGHTWORK_START && $CURRENT_TIME -lt $LIGHTWORK_END ]]; then
-              ICON="○"
-              LABEL="Light Work"
-              TOOLTIP="13:00-17:00: Light Work"
-          elif [[ $CURRENT_TIME -ge $FREE2_START && $CURRENT_TIME -lt $FREE2_END ]]; then
-              ICON="▲"
-              LABEL="Free Time"
-              TOOLTIP="17:00-23:00: Free Time"
-          elif [[ $CURRENT_TIME -ge $DEEPWORK_START || $CURRENT_TIME -lt $BEDTIME_START ]]; then
-              ICON="●"
-              LABEL="Deep Work"
-              TOOLTIP="23:00-01:30: Deep Work"
-          elif [[ $CURRENT_TIME -ge $BEDTIME_START && $CURRENT_TIME -lt $BEDTIME_END ]]; then
-              ICON="◎"
-              LABEL="Bedtime"
-              TOOLTIP="01:30-02:00: Bedtime Routine"
-          else
-              # Outside routine hours
-              ICON="◐"
-              LABEL="Sleep"
-              TOOLTIP="Sleep Time"
-          fi
-
-          # Output format
-          if [[ "$SHOW_LABEL" == "true" ]]; then
-              echo "{\"text\": \"$ICON $LABEL\", \"tooltip\": \"$TOOLTIP\", \"class\": \"routine\"}"
-          else
-              echo "{\"text\": \"$ICON\", \"tooltip\": \"$TOOLTIP\", \"class\": \"routine\"}"
-          fi
-      else
-          # Weekend - show different icon
-          echo "{\"text\": \"★\", \"tooltip\": \"Weekend!\", \"class\": \"routine\"}"
-      fi
     '';
   };
 

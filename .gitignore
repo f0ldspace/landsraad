@@ -1,3 +1,2 @@
-hosts/caladan
-modules/media-server-core.nix
-modules/media-server-extended.nix
+ix/modules/media-server-core.nix
+ix/modules/media-server-extended.nix

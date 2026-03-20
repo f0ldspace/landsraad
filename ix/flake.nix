@@ -48,7 +48,7 @@
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
-            ./hosts/ix/configuration.nix
+            ./configuration.nix
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
@@ -65,43 +65,6 @@
                 (import ./overlays/fix-typeguard-sphinx.nix)
               ];
             }
-          ];
-        };
-
-        bene = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs;
-            username = "kh";
-          };
-          modules = [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
-            ./hosts/bene/configuration.nix
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.kh = import ./home/kh.nix;
-              home-manager.extraSpecialArgs = {
-                inherit inputs;
-                username = "kh";
-              };
-            }
-            {
-              nixpkgs.overlays = [
-                (import ./overlays/railway-wallet.nix)
-              ];
-            }
-          ];
-        };
-
-        caladan = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs;
-            username = "f0ld";
-          };
-          modules = [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
-            ./hosts/caladan/configuration.nix
           ];
         };
       };
