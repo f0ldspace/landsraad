@@ -14,22 +14,22 @@
     ./finance.nix
     ./productivity.nix
     ./websites.nix
-    ./modules/gaming.nix
+    ./gaming.nix
     # Shared modules
-    ./modules/programming.nix
-    ./modules/ai.nix
+    ./programming.nix
+    ./ai.nix
     # Servers
-    ./modules/wakapi-server.nix
-    ./modules/taskwarrior-server.nix
-    ./modules/audiobookshelf-server.nix
-    ./modules/navidrone.nix
-    ./modules/restic-backups.nix
-    ./modules/miniflux.nix
-    ./modules/searxng.nix
+    ./servers/wakapi-server.nix
+    #./modules/taskwarrior-server.nix
+    ./servers/audiobookshelf-server.nix
+    ./servers/navidrone.nix
+    ./restic-backups.nix
+    #./modules/miniflux.nix
+    ./servers/searxng.nix
     #./modules/open-webui.nix
     #./modules/mediawiki.nix
-    ./modules/privatebin.nix
-    ./modules/forgejo.nix
+    ./servers/privatebin.nix
+    #./modules/forgejo.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
     ./modules/desktop/gnome.nix
@@ -99,7 +99,6 @@
   };
 
   # services.xserver.libinput.enable = true;
-
   users.users.${username} = {
     isNormalUser = true;
     description = username;
@@ -154,6 +153,7 @@
     })
     wget
     jq
+    rockbox-utility
     element-desktop
     mat2
     qemu
@@ -203,7 +203,7 @@
     vlc
     gnupg
     bolt-launcher
-    rclone-ui
+    #TODO: uncomment rclone-ui
     restic
     rmpc
     mpc

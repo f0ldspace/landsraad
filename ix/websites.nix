@@ -24,6 +24,11 @@ let
 
   webApps = [
     {
+      name = "Cryptee";
+      url = "https://crypt.ee/home";
+      icon = "crypt.png";
+    }
+    {
       name = "Lesswrong";
       url = "https://lesswrong.com";
       icon = "lesswrong.png";

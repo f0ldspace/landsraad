@@ -10,6 +10,7 @@
     lazygit
     git
     gh
+    android-studio
     vscodium-fhs
     python3
     wakatime-cli
