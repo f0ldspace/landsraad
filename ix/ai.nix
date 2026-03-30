@@ -9,7 +9,6 @@
     claude-code
     claude-monitor
     vulkan-tools
-    lmstudio
     opencode
     inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop
     inputs.mistral-vibe.packages.${pkgs.stdenv.hostPlatform.system}.default

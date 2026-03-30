@@ -210,8 +210,8 @@
       Mod+Shift+B { spawn "alacritty" "--class" "blog-todo" "--working-directory" "/home/${username}/blog/todo/" "-e" "trinity"; }
       Mod+S { spawn "flatpak" "run" "net.mkiol.SpeechNote"; }
       Mod+Q { close-window; }
-      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/wiki/" "-e" "opencode" "--agent" "wiki"; }
-      Mod+W { spawn "alacritty" "--class" "wiki-nvim" "--working-directory" "/home/${username}/wiki/" "-e" "trinity"; }
+      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall/" "-e" "opencode" "--agent" "wiki"; }
+      Mod+W { spawn "obsidian"; }
       Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
 
       // Vim-style navigation

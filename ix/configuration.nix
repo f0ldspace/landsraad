@@ -35,7 +35,6 @@
     ./modules/desktop/gnome.nix
     ./modules/desktop/niri.nix
   ];
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -110,6 +109,8 @@
     packages = with pkgs; [
     ];
   };
+
+  programs.nix-ld.enable = true;
   programs.firefox.enable = true;
   services.ollama = {
     enable = true;
@@ -154,7 +155,7 @@
     wget
     jq
     rockbox-utility
-    element-desktop
+    linux-wallpaperengine
     mat2
     qemu
     libva-utils
