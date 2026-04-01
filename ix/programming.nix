@@ -7,21 +7,22 @@
 {
   environment.systemPackages = with pkgs; [
     neovim
+    tokei
     lazygit
     git
     gh
-    android-studio
+    #android-studio
     vscodium-fhs
     python3
     wakatime-cli
-    zellij
+    #zellij
     pipx
     rustc
     cargo
     cargo-ui
     nodejs_24
     rust-analyzer
-    marp-cli
+    #marp-cli
     markdownlint-cli
     markdownlint-cli2
   ];
