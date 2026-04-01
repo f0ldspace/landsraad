@@ -43,11 +43,11 @@
     enable32Bit = true; # For Steam/gaming
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d";
-  };
+  #  nix.gc = {
+  #  automatic = true;
+  #  dates = "weekly";
+  #  options = "--delete-older-than 14d";
+  #};
 
   networking.hostName = "bene"; # Define your hostname.
   system.nixos.label = "bene";
@@ -83,31 +83,31 @@
     ];
   };
   programs.firefox.enable = true;
-  services.ollama = {
-    enable = true;
-    package = pkgs.ollama-vulkan;
-    environmentVariables = {
-      OLLAMA_KV_CACHE_TYPE = "q8_0";
-      OLLAMA_KEEP_ALIVE = "30m";
-      OLLAMA_NUM_CTX = "65536";
-    };
-  };
+  #services.ollama = {
+  #  enable = true;
+  #  package = pkgs.ollama-vulkan;
+  #  environmentVariables = {
+  #    OLLAMA_KV_CACHE_TYPE = "q8_0";
+  #    OLLAMA_KEEP_ALIVE = "30m";
+  #    OLLAMA_NUM_CTX = "65536";
+  #  };
+  #};
 
   nixpkgs.config.allowUnfree = true;
   environment.variables.EDITOR = "codium";
   services.flatpak.enable = true;
-  services.mullvad-vpn.enable = true;
+  #services.mullvad-vpn.enable = true;
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
 
   # Mandarin support
-  fonts.packages = with pkgs; [
-    noto-fonts-cjk-sans
-    noto-fonts-cjk-serif
+  #fonts.packages = with pkgs; [
+  #  noto-fonts-cjk-sans
+  #  noto-fonts-cjk-serif
 
-  ];
+  #];
 
   # Minimal package set
   environment.systemPackages = with pkgs; [
@@ -122,7 +122,7 @@
     plex-desktop
 
     # VPN
-    mullvad-vpn
+    # mullvad-vpn
 
     # Basic utilities
     wget
