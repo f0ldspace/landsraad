@@ -801,12 +801,12 @@
           exit 0
         fi
 
-      TOTAL_SECS=$(echo "$RESPONSE" | jq -r '([.data[0].editors[] | select(.name == "Neovim" or .name == "Unknown") | .total_seconds] | add) // 0')
+      TOTAL_SECS=$(echo "$RESPONSE" | jq -r '([.data[0].editors[].total_seconds] | add) // 0')
       TOTAL_SECS=''${TOTAL_SECS%.*}
       HOURS=$((TOTAL_SECS / 3600))
       MINS=$(( (TOTAL_SECS % 3600) / 60 ))
       TOTAL=$(printf " %02d:%02d" $HOURS $MINS)
-      echo "{\"text\": \"$ICON $TOTAL\", \"tooltip\": \"Neovim today: $TOTAL\", \"class\": \"active\"}"
+      echo "{\"text\": \"$ICON $TOTAL\", \"tooltip\": \"Coding today: $TOTAL\", \"class\": \"active\"}"
     '';
   };
 
