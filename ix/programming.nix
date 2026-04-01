@@ -10,6 +10,7 @@
     tokei
     lazygit
     git
+    bc
     gh
     #android-studio
     vscodium-fhs

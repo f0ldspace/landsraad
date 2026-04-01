@@ -166,8 +166,8 @@
     wget
     jq
     rockbox-utility
-    linux-wallpaperengine
     mat2
+    inputs.matugen.packages.${system}.default
     qemu
     libva-utils
     gparted
