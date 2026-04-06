@@ -1452,34 +1452,4 @@
     };
   };
 
-  # Zathura document viewer with Rose Pine Moon
-  programs.zathura = {
-    enable = true;
-    options = {
-      # Rose Pine Moon colors
-      default-bg = "#232136";
-      default-fg = "#e0def4";
-      statusbar-bg = "#2a273f";
-      statusbar-fg = "#e0def4";
-      inputbar-bg = "#2a273f";
-      inputbar-fg = "#e0def4";
-      notification-bg = "#2a273f";
-      notification-fg = "#e0def4";
-      notification-error-bg = "#2a273f";
-      notification-error-fg = "#eb6f92";
-      notification-warning-bg = "#2a273f";
-      notification-warning-fg = "#f6c177";
-      highlight-color = "#f6c177";
-      highlight-active-color = "#c4a7e7";
-      completion-bg = "#2a273f";
-      completion-fg = "#e0def4";
-      completion-highlight-bg = "#393552";
-      completion-highlight-fg = "#e0def4";
-      recolor = true;
-      recolor-lightcolor = "#232136";
-      recolor-darkcolor = "#e0def4";
-      recolor-keephue = true;
-    };
-  };
-
 }

@@ -22,7 +22,7 @@
     ./servers/wakapi-server.nix
     #./modules/taskwarrior-server.nix
     ./servers/audiobookshelf-server.nix
-    ./servers/navidrone.nix
+    #./servers/navidrone.nix
     ./restic-backups.nix
     #./modules/miniflux.nix
     ./servers/searxng.nix
