@@ -58,8 +58,11 @@
     gtk3.extraConfig = {
       gtk-decoration-layout = "";
     };
-    gtk4.extraConfig = {
-      gtk-decoration-layout = "";
+    gtk4 = {
+      theme = null;
+      extraConfig = {
+        gtk-decoration-layout = "";
+      };
     };
   };
 
@@ -121,7 +124,7 @@
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "waybar"
     spawn-at-startup "mako"
-    spawn-at-startup "swww-daemon"
+    spawn-at-startup "awww-daemon"
     spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
     spawn-at-startup "swayidle" "-w" "timeout" "1800" "swaylock -f" "timeout" "2700" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors" "before-sleep" "swaylock -f"
     spawn-at-startup "nm-applet" "--indicator"

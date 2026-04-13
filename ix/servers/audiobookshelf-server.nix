@@ -16,9 +16,6 @@
   systemd.services.audiobookshelf.serviceConfig = {
     User = lib.mkForce username;
     Group = lib.mkForce "users";
-    BindPaths = [
-      "/home/${username}/Podcasts"
-    ];
     BindReadOnlyPaths = [
       "/home/${username}/Audiobooks"
     ];

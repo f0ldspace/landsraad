@@ -26,6 +26,7 @@
     ./restic-backups.nix
     #./modules/miniflux.nix
     ./servers/searxng.nix
+    ./servers/immich.nix
     #./modules/open-webui.nix
     #./modules/mediawiki.nix
     ./servers/privatebin.nix
@@ -167,7 +168,6 @@
     jq
     rockbox-utility
     mat2
-    inputs.matugen.packages.${system}.default
     qemu
     libva-utils
     gparted

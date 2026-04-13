@@ -16,7 +16,7 @@
     anki
     speedtest-cli
     imagemagick
-    wikit
+    #wikit # nodePackages removed from nixpkgs
     glow
     taskwarrior3
     taskwarrior-tui

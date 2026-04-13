@@ -24,7 +24,7 @@
     nodejs_24
     rust-analyzer
     #marp-cli
-    markdownlint-cli
-    markdownlint-cli2
+    #markdownlint-cli # nodePackages removed from nixpkgs
+    #markdownlint-cli2 # nodePackages removed from nixpkgs
   ];
 }

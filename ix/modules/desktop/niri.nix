@@ -69,7 +69,7 @@
     wf-recorder
 
     # Wallpaper
-    swww
+    awww
     waypaper
 
     # Clipboard
