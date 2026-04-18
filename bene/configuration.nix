@@ -109,7 +109,16 @@
   #  noto-fonts-cjk-serif
 
   #];
-
+  programs.appimage.enable = true;
+  programs.appimage.binfmt = true;
+  programs.appimage.package = pkgs.appimage-run.override {
+    extraPkgs = pkgs: [
+      pkgs.icu
+      pkgs.libxcrypt-legacy
+      pkgs.python312
+      pkgs.python312Packages.torch
+    ];
+  };
   # Minimal package set
   environment.systemPackages = with pkgs; [
     # Browsers
@@ -123,15 +132,11 @@
     plex-desktop
 
     # VPN
-<<<<<<< HEAD
-    # mullvad-vpn
-=======
     mullvad-vpn
-    
+
     # VM
     qemu
     virt-manager
->>>>>>> d10eabb (claude slop)
 
     # Basic utilities
     wget
@@ -144,7 +149,7 @@
 
     # Keyboard utility
     wootility
-    
+
     # Wayland tools
     waypaper
     gst_all_1.gst-plugins-good
