@@ -78,6 +78,7 @@
       "networkmanager"
       "wheel"
       "input"
+      "libvirtd"
     ];
     packages = with pkgs; [
     ];
@@ -122,7 +123,15 @@
     plex-desktop
 
     # VPN
+<<<<<<< HEAD
     # mullvad-vpn
+=======
+    mullvad-vpn
+    
+    # VM
+    qemu
+    virt-manager
+>>>>>>> d10eabb (claude slop)
 
     # Basic utilities
     wget
@@ -133,11 +142,20 @@
     xclip
     gnupg
 
+    # Keyboard utility
+    wootility
+    
     # Wayland tools
     waypaper
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
   ];
+
+  virtualisation.libvirtd.enable = true;
+
+  services.udev.extraRules = ''
+    SUBSYSTEM=="input", ATTRS{idVendor}=="056a", ATTRS{idProduct}=="037a", MODE="0000"
+  '';
 
   networking.firewall.enable = true;
   system.stateVersion = "25.05";

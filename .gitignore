@@ -1,2 +1,5 @@
 ix/modules/media-server-core.nix
 ix/modules/media-server-extended.nix
+.gitignore
+CLAUDE.md
+/bene/.claude/

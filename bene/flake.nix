@@ -24,10 +24,6 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    caelestia-shell = {
-      url = "github:caelestia-dots/shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
   outputs =
     {
@@ -56,7 +52,6 @@
               home-manager.users.deviate = import ./home/deviate.nix;
               home-manager.sharedModules = [
                 inputs.spicetify-nix.homeManagerModules.default
-                inputs.caelestia-shell.homeManagerModules.default
               ];
               home-manager.extraSpecialArgs = {
                 inherit inputs;
@@ -67,6 +62,7 @@
               nixpkgs.overlays = [
                 (import ./overlays/railway-wallet.nix)
                 (import ./overlays/fix-typeguard-sphinx.nix)
+                (import ./overlays/osu-lazer-bin.nix)
               ];
             }
           ];

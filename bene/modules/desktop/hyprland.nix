@@ -50,8 +50,9 @@
     wl-clipboard
     cliphist
 
-    # Launcher (fallback for clipboard picker)
+    # Launcher
     wofi
+    wlogout
 
     # Utilities
     brightnessctl
@@ -69,12 +70,8 @@
     gnome-themes-extra
     gtk-engine-murrine
 
-    # Hardware control (used by caelestia for brightness/display)
-    ddcutil
-
-    # Caelestia-shell dependencies
-    aubio
-    lm_sensors
+    # Status bar
+    waybar
   ];
 
   systemd.user.services.polkit-gnome-agent = {

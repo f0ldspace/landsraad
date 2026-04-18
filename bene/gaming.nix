@@ -12,5 +12,6 @@
   environment.systemPackages = with pkgs; [
     prismlauncher
     osu-lazer-bin
+    bolt-launcher
   ];
 }

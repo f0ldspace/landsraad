@@ -85,6 +85,7 @@ in
 
       exec-once = [
         "swww-daemon"
+        "waybar"
         "nm-applet --indicator"
         "wl-paste --watch cliphist store"
       ];
@@ -143,6 +144,11 @@ in
         follow_mouse = 1;
       };
 
+      device = [{
+        name = "wacom-co.-ltd.-ctl-472-mouse";
+        enabled = false;
+      }];
+
 misc = {
         force_default_wallpaper = 0;
         disable_hyprland_logo = true;
@@ -162,7 +168,7 @@ misc = {
       bind = [
         # Apps
         "$mod, Return, exec, alacritty"
-        "$mod, D, exec, caelestia shell drawers toggle launcher"
+        "$mod, D, exec, wofi --show drun"
         "$mod, B, exec, zen"
         "$mod, Y, exec, alacritty --class yazi -e yazi"
         "$mod, W, exec, alacritty --class wiki-nvim --working-directory /home/${username}/wiki/ -e codium"
@@ -177,7 +183,7 @@ misc = {
 
         # Session
         "$mod, Escape, exec, hyprlock"
-        "$mod SHIFT, E, exec, caelestia shell drawers toggle session"
+        "$mod SHIFT, E, exec, wlogout"
         "$mod, Tab, workspace, +1"
         "$mod SHIFT, Tab, workspace, -1"
 
@@ -236,27 +242,6 @@ misc = {
         ", XF86AudioPlay, exec, playerctl play-pause"
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
-      ];
-    };
-  };
-
-  # --- Caelestia shell ---
-  programs.caelestia = {
-    enable = true;
-    cli.enable = true;
-    systemd.enable = true;
-  };
-
-  # Restart caelestia/quickshell automatically if it crashes
-  systemd.user.services.caelestia = {
-    serviceConfig = {
-      Restart = "on-failure";
-      RestartSec = "2s";
-      Environment = [
-        # Persist Vulkan pipeline cache to avoid shader recompilation on each start
-        "QT_VULKAN_PIPELINE_CACHE_SAVE_FILE=%h/.cache/quickshell/vk-pipeline.cache"
-        # Persist QML bytecode cache so panel QML isn't recompiled on first swipe
-        "QML_DISK_CACHE_PATH=%h/.cache/quickshell/qml"
       ];
     };
   };
@@ -320,7 +305,153 @@ misc = {
     };
   };
 
-# --- Screenshots directory ---
+  # --- Waybar ---
+  programs.waybar = {
+    enable = true;
+    settings = [{
+      layer = "top";
+      position = "top";
+      margin-top = 8;
+      margin-left = 12;
+      margin-right = 12;
+      height = 36;
+      spacing = 4;
+
+      modules-left = [ "hyprland/workspaces" "hyprland/window" ];
+      modules-center = [ "clock" ];
+      modules-right = [ "pulseaudio" "network" "cpu" "memory" "tray" ];
+
+      "hyprland/workspaces" = {
+        format = "{id}";
+        on-scroll-up = "hyprctl dispatch workspace +1";
+        on-scroll-down = "hyprctl dispatch workspace -1";
+      };
+
+      "hyprland/window" = {
+        max-length = 60;
+        separate-outputs = true;
+      };
+
+      clock = {
+        format = "  {:%H:%M}";
+        format-alt = "  {:%a %d %b}";
+        tooltip-format = "<tt>{calendar}</tt>";
+      };
+
+      pulseaudio = {
+        format = "{icon} {volume}%";
+        format-muted = " muted";
+        format-icons = { default = [ "" "" "" ]; };
+        on-click = "pulsemixer";
+      };
+
+      network = {
+        format-wifi = "  {essid}";
+        format-ethernet = "  {ifname}";
+        format-disconnected = " disconnected";
+        tooltip-format = "{ipaddr}";
+      };
+
+      cpu = {
+        format = " {usage}%";
+        interval = 5;
+      };
+
+      memory = {
+        format = " {percentage}%";
+        interval = 5;
+      };
+
+      tray = {
+        spacing = 8;
+      };
+    }];
+
+    style = ''
+      * {
+        border: none;
+        border-radius: 0;
+        font-family: "JetBrainsMono Nerd Font";
+        font-size: 13px;
+        min-height: 0;
+      }
+
+      window#waybar {
+        background: transparent;
+        color: #cdd6f4;
+      }
+
+      .modules-left,
+      .modules-center,
+      .modules-right {
+        background: #1e1e2e;
+        border-radius: 12px;
+        padding: 0 8px;
+      }
+
+      #workspaces button {
+        padding: 0 8px;
+        color: #6c7086;
+        background: transparent;
+        border-radius: 8px;
+      }
+
+      #workspaces button.active {
+        color: #cba6f7;
+        background: #313244;
+      }
+
+      #workspaces button:hover {
+        color: #cdd6f4;
+        background: #313244;
+      }
+
+      #window {
+        color: #6c7086;
+        padding: 0 8px;
+      }
+
+      #clock {
+        color: #cdd6f4;
+        padding: 0 12px;
+        font-weight: bold;
+      }
+
+      #pulseaudio {
+        color: #94e2d5;
+        padding: 0 8px;
+      }
+
+      #pulseaudio.muted {
+        color: #6c7086;
+      }
+
+      #network {
+        color: #89b4fa;
+        padding: 0 8px;
+      }
+
+      #network.disconnected {
+        color: #f38ba8;
+      }
+
+      #cpu {
+        color: #a6e3a1;
+        padding: 0 8px;
+      }
+
+      #memory {
+        color: #f9e2af;
+        padding: 0 8px;
+      }
+
+      #tray {
+        padding: 0 8px;
+      }
+    '';
+  };
+
+  # --- Screenshots directory ---
   home.file."Pictures/Screenshots/.keep".text = "";
 
   # --- Yazi file manager ---
