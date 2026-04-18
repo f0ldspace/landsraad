@@ -27,7 +27,7 @@
     #./modules/miniflux.nix
     ./servers/searxng.nix
     ./servers/immich.nix
-    #./modules/open-webui.nix
+    ./servers/open-webui.nix
     #./modules/mediawiki.nix
     ./servers/privatebin.nix
     #./modules/forgejo.nix
@@ -48,7 +48,9 @@
   '';
   hardware.logitech.wireless.enable = true;
   hardware.logitech.wireless.enableGraphical = true; # pulls in Solaar
-
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+  boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -110,7 +112,6 @@
     packages = with pkgs; [
     ];
   };
-
   programs.nix-ld.enable = true;
   programs.firefox.enable = true;
   services.ollama = {
@@ -153,6 +154,17 @@
     ];
   };
 
+  services.mpdscribble = {
+    enable = true;
+    endpoints = {
+      "last.fm" = {
+        url = "https://post.audioscrobbler.com/";
+        username = "f0ldspace";
+        passwordFile = "/home/f0ld/.lastfm-password";
+      };
+    };
+  };
+
   # NOTE: SOFTWARE
   environment.systemPackages = with pkgs; [
     (pkgs.symlinkJoin {
@@ -168,7 +180,9 @@
     jq
     rockbox-utility
     mat2
+    # bambu-studio
     qemu
+    tor-browser
     libva-utils
     gparted
     ungoogled-chromium
@@ -203,6 +217,7 @@
     plex-desktop
     yt-dlp
     freetube
+    calibre
     mpv
     signal-desktop
     btop
@@ -239,7 +254,6 @@
   # };
 
   # services.openssh.enable = true;
-
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   networking.firewall.enable = true;

@@ -16,8 +16,8 @@
           #"wiki.arrakis.computer" = "http://localhost:8080";
           #"tasks.arrakis.computer" = "http://localhost:7331";
           "paste.arrakis.computer" = "http://localhost:8443";
-          "miniflux.arrakis.computer" = "http://localhost:8085";
-          #"chat.arrakis.computer" = "http://localhost:3050";
+          #"miniflux.arrakis.computer" = "http://localhost:8085";
+          "chat.arrakis.computer" = "http://localhost:3050";
           #"git.arrakis.computer" = "http://localhost:3300";
         };
       };
