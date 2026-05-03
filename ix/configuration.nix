@@ -27,9 +27,9 @@
     #./modules/miniflux.nix
     ./servers/searxng.nix
     ./servers/immich.nix
-    ./servers/open-webui.nix
+    #./servers/open-webui.nix
     #./modules/mediawiki.nix
-    ./servers/privatebin.nix
+    #./servers/privatebin.nix
     #./modules/forgejo.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
@@ -254,8 +254,8 @@
   # };
 
   # services.openssh.enable = true;
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.allowedTCPPorts = [ 4096 ];
+  networking.firewall.allowedUDPPorts = [ 4096 ];
   networking.firewall.enable = true;
   programs.localsend = {
     enable = true;

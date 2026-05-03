@@ -13,6 +13,6 @@
     monero-gui
     trezor-suite
     cgt-calc
-    railway-wallet
+    #railway-wallet
   ];
 }
