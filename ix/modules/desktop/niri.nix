@@ -48,17 +48,11 @@
     # XWayland for X11 apps
     xwayland-satellite
 
-    # Status bar
-    waybar
     # Launcher
     wofi
 
     # Notifications
     mako
-
-    # Screen lock
-    swaylock-effects
-    swayidle
 
     # Screenshots
     grim
@@ -71,10 +65,6 @@
     # Wallpaper
     awww
     waypaper
-
-    # Clipboard
-    wl-clipboard
-    cliphist
 
     # Utilities
     brightnessctl

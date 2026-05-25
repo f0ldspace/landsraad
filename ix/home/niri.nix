@@ -661,16 +661,16 @@
   };
 
   # Gammastep for night light
-  services.gammastep = {
-    enable = true;
-    dawnTime = "08:00";
-    duskTime = "22:00";
-    temperature = {
-      day = 6500;
-      night = 2500;
-    };
-    tray = true;
-  };
+  #services.gammastep = {
+  # enable = true;
+  # dawnTime = "08:00";
+  # duskTime = "22:00";
+  # temperature = {
+  #   day = 6500;
+  #   night = 2500;
+  # };
+  # tray = true;
+  #};
 
   # Mako notification daemon
   services.mako = {
@@ -698,7 +698,7 @@
 
   # Swaylock configuration
   programs.swaylock = {
-    enable = true;
+    enable = false;
     package = pkgs.swaylock-effects;
     settings = {
       color = "232136";

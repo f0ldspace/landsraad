@@ -14,6 +14,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    dms-plugin-registry = {
+      url = "github:AvengeMedia/dms-plugin-registry";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     trinity.url = "path:/home/f0ld/trinity";
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
@@ -46,6 +50,7 @@
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
+            inputs.dms-plugin-registry.modules.default
             hermes-agent.nixosModules.default
             #inputs.sops-nix.nixosModules.sops
             ./configuration.nix
