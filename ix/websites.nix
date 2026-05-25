@@ -17,7 +17,7 @@ let
     pkgs.makeDesktopItem {
       name = "${name}-app";
       desktopName = name;
-      exec = "${pkgs.chromium}/bin/chromium --app=${url}";
+      exec = "appimage-run appimages/helium.AppImage --app=${url}";
       icon = "/home/${username}/.icons/${icon}";
       categories = [ "Network" ];
     };

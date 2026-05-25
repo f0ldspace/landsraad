@@ -11,6 +11,7 @@
     lazygit
     git
     bc
+    signal-cli
     gh
     #android-studio
     vscodium-fhs

@@ -15,5 +15,7 @@
     osu-lazer
     openspeedrun
     mangohud
+    protontricks
+    heroic
   ];
 }

@@ -208,10 +208,8 @@
       Mod+Shift+T { spawn "bash" "-c" "alacritty --title Taskwarrior -e taskwarrior-tui && task synchronize"; }
       Mod+N { spawn "makoctl" "mode" "-t" "do-not-disturb"; }
       Mod+D { spawn "wofi" "--show" "drun"; }
-      Mod+B { spawn "zen"; }
+      Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run ~/appimages/helium.AppImage"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
-      Mod+Shift+B { spawn "alacritty" "--class" "blog-todo" "--working-directory" "/home/${username}/blog/todo/" "-e" "trinity"; }
-      Mod+S { spawn "flatpak" "run" "net.mkiol.SpeechNote"; }
       Mod+Q { close-window; }
       Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall/" "-e" "opencode" "--agent" "wiki"; }
       Mod+W { spawn "obsidian"; }

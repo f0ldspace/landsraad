@@ -12,6 +12,7 @@
   environment.systemPackages = with pkgs; [
     monero-gui
     trezor-suite
+    portfolio
     cgt-calc
     #railway-wallet
   ];

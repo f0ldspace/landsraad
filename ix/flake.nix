@@ -1,6 +1,8 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    hermes-agent.url = "github:NousResearch/hermes-agent";
+    #sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     flake-utils.url = "github:numtide/flake-utils";
     home-manager = {
@@ -26,6 +28,7 @@
   outputs =
     {
       self,
+      hermes-agent,
       nixpkgs,
       ...
     }@inputs:
@@ -43,6 +46,8 @@
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
+            hermes-agent.nixosModules.default
+            #inputs.sops-nix.nixosModules.sops
             ./configuration.nix
             inputs.home-manager.nixosModules.home-manager
             {
