@@ -66,9 +66,83 @@
     };
   };
 
+  # Alacritty terminal configuration
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      general.import = [
+        "~/.config/alacritty/dank-theme.toml"
+      ];
+
+      font = {
+        size = 12.0;
+        normal = {
+          family = "JetBrainsMono Nerd Font";
+          style = "Regular";
+        };
+        bold = {
+          family = "JetBrainsMono Nerd Font";
+          style = "Bold";
+        };
+        italic = {
+          family = "JetBrainsMono Nerd Font";
+          style = "Italic";
+        };
+      };
+
+      window = {
+        padding = { x = 8; y = 8; };
+        opacity = 0.95;
+      };
+
+      # Rose Pine Moon fallback colors (overridden by DMS dank-theme.toml when available)
+      colors = {
+        primary = {
+          background = "#232136";
+          foreground = "#e0def4";
+        };
+        cursor = {
+          text = "#232136";
+          cursor = "#e0def4";
+        };
+        selection = {
+          text = "#232136";
+          background = "#c4a7e7";
+        };
+        normal = {
+          black = "#393552";
+          red = "#eb6f92";
+          green = "#9ccfd8";
+          yellow = "#f6c177";
+          blue = "#3e8fb0";
+          magenta = "#c4a7e7";
+          cyan = "#ea9a97";
+          white = "#e0def4";
+        };
+        bright = {
+          black = "#6e6a86";
+          red = "#eb6f92";
+          green = "#9ccfd8";
+          yellow = "#f6c177";
+          blue = "#3e8fb0";
+          magenta = "#c4a7e7";
+          cyan = "#ea9a97";
+          white = "#e0def4";
+        };
+      };
+    };
+  };
+
   # Niri configuration
   xdg.configFile."niri/config.kdl".force = true;
   xdg.configFile."niri/config.kdl".text = ''
+    // DMS theme includes
+    include "dms/colors.kdl"
+    include "dms/layout.kdl"
+    include "dms/outputs.kdl"
+    include "dms/wpblur.kdl"
+    include "dms/alttab.kdl"
+
     // Input configuration
     input {
       keyboard {
@@ -122,11 +196,8 @@
 
     // Spawn at startup
     spawn-at-startup "xwayland-satellite"
-    spawn-at-startup "waybar"
-    spawn-at-startup "mako"
-    spawn-at-startup "awww-daemon"
+    // DMS spawns via niri.enableSpawn - no need for waybar/mako
     spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
-    spawn-at-startup "swayidle" "-w" "timeout" "1800" "swaylock -f" "timeout" "2700" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors" "before-sleep" "swaylock -f"
     spawn-at-startup "nm-applet" "--indicator"
 
     // Cursor
@@ -206,8 +277,8 @@
       // Mod = Super/Logo key
       Mod+T { spawn "alacritty"; }
       Mod+Shift+T { spawn "bash" "-c" "alacritty --title Taskwarrior -e taskwarrior-tui && task synchronize"; }
-      Mod+N { spawn "makoctl" "mode" "-t" "do-not-disturb"; }
-      Mod+D { spawn "wofi" "--show" "drun"; }
+      Mod+N { spawn "dms" "ipc" "call" "notifications" "toggleDoNotDisturb"; }
+      Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
       Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run ~/appimages/helium.AppImage"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+Q { close-window; }
@@ -276,32 +347,38 @@
       // Floating
       Mod+Space { toggle-window-floating; }
 
-      // Clipboard
-      Mod+V { spawn "bash" "-c" "cliphist list | wofi --dmenu | cliphist decode | wl-copy"; }
+      // Clipboard (DMS)
+      Mod+V { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
 
-      // Lock screen
-      Mod+Escape { spawn "swaylock"; }
+      // Lock screen (DMS)
+      Mod+Escape { spawn "dms" "ipc" "call" "lock" "lock"; }
 
-      // Screenshot
-      Print { screenshot; }
-      Ctrl+Print { screenshot-screen; }
-      Alt+Print { screenshot-window; }
+      // Screenshot (DMS)
+      Print { spawn "dms" "ipc" "call" "niri" "screenshot"; }
+      Ctrl+Print { spawn "dms" "ipc" "call" "niri" "screenshotScreen"; }
+      Alt+Print { spawn "dms" "ipc" "call" "niri" "screenshotWindow"; }
 
-      // Screenshot with satty annotation
+      // Screenshot with satty annotation (keep as fallback)
       Mod+Print { spawn "bash" "-c" "grim -g \"$(slurp)\" - | satty -f -"; }
 
-      // Media keys
-      XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-      XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-      XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-      XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+      // Media keys (DMS)
+      XF86AudioRaiseVolume { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
+      XF86AudioLowerVolume { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
+      XF86AudioMute { spawn "dms" "ipc" "call" "audio" "mute"; }
+      XF86AudioMicMute { spawn "dms" "ipc" "call" "audio" "micmute"; }
 
-      XF86MonBrightnessUp { spawn "brightnessctl" "set" "5%+"; }
-      XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+      XF86MonBrightnessUp { spawn "dms" "ipc" "call" "brightness" "increment" "5"; }
+      XF86MonBrightnessDown { spawn "dms" "ipc" "call" "brightness" "decrement" "5"; }
 
-      XF86AudioPlay { spawn "playerctl" "play-pause"; }
-      XF86AudioNext { spawn "playerctl" "next"; }
-      XF86AudioPrev { spawn "playerctl" "previous"; }
+      XF86AudioPlay { spawn "dms" "ipc" "call" "mpris" "playPause"; }
+      XF86AudioNext { spawn "dms" "ipc" "call" "mpris" "next"; }
+      XF86AudioPrev { spawn "dms" "ipc" "call" "mpris" "previous"; }
+
+      // DMS panels
+      Mod+A { spawn "dms" "ipc" "call" "control-center" "toggle"; }
+      Mod+Shift+N { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+      Mod+P { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+      Mod+Shift+S { spawn "dms" "ipc" "call" "settings" "toggle"; }
 
       // Overview
       Mod+O { toggle-overview; }
@@ -311,9 +388,9 @@
     }
   '';
 
-  # Waybar configuration
+  # Waybar configuration (disabled - DMS provides its own bar)
   programs.waybar = {
-    enable = true;
+    enable = false;
     settings = {
       mainBar = {
         layer = "top";
@@ -672,9 +749,9 @@
   # tray = true;
   #};
 
-  # Mako notification daemon
+  # Mako notification daemon (disabled - DMS provides built-in notifications)
   services.mako = {
-    enable = true;
+    enable = false;
     settings = {
       background-color = "#232136";
       text-color = "#e0def4";
@@ -755,7 +832,7 @@
 
       case $selected in
         Lock)
-          swaylock
+          dms ipc call lock lock
           ;;
         Logout)
           niri msg action quit
@@ -1205,9 +1282,7 @@
   '';
 
   # Force overwrite existing config files
-  xdg.configFile."waybar/config".force = true;
-  xdg.configFile."waybar/style.css".force = true;
-  xdg.configFile."mako/config".force = true;
+  xdg.configFile."alacritty/alacritty.toml".force = true;
   xdg.configFile."wofi/config".force = true;
   xdg.configFile."wofi/style.css".force = true;
 

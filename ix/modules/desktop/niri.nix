@@ -24,8 +24,8 @@
   # Polkit for privilege escalation dialogs
   security.polkit.enable = true;
 
-  # PAM configuration for swaylock authentication
-  security.pam.services.swaylock = { };
+  # PAM configuration for DMS lock screen
+  security.pam.services.dms-greeter = { };
 
   # Enable dconf for GTK settings to work in niri session
   programs.dconf.enable = true;
@@ -51,8 +51,7 @@
     # Launcher
     wofi
 
-    # Notifications
-    mako
+    # Notifications handled by DMS
 
     # Screenshots
     grim
@@ -81,18 +80,18 @@
     gtk-engine-murrine
   ];
 
-  # Start polkit agent for privilege escalation
-  systemd.user.services.polkit-gnome-agent = {
-    description = "Polkit GNOME Authentication Agent";
-    wantedBy = [ "graphical-session.target" ];
-    wants = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
-    };
-  };
+  # Polkit agent handled by DMS built-in polkit
+  # systemd.user.services.polkit-gnome-agent = {
+  #   description = "Polkit GNOME Authentication Agent";
+  #   wantedBy = [ "graphical-session.target" ];
+  #   wants = [ "graphical-session.target" ];
+  #   after = [ "graphical-session.target" ];
+  #   serviceConfig = {
+  #     Type = "simple";
+  #     ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+  #     Restart = "on-failure";
+  #     RestartSec = 1;
+  #     TimeoutStopSec = 10;
+  #   };
+  # };
 }
