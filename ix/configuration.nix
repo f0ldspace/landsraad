@@ -62,15 +62,6 @@
   system.nixos.label = "landsraad";
   programs.dms-shell = {
     enable = true;
-
-    plugins = {
-      # Simply enable plugins by their ID (from the registry)
-      niriScreenshot.enable = true;
-      calculator.enable = true;
-      breathing.enable = true;
-      bongoCat.enable = true;
-      quickTote.enable = true;
-    };
   };
   networking.networkmanager.enable = true;
   services.tailscale.enable = true;

@@ -91,45 +91,14 @@
       };
 
       window = {
-        padding = { x = 8; y = 8; };
+        padding = {
+          x = 8;
+          y = 8;
+        };
         opacity = 0.95;
       };
 
-      # Rose Pine Moon fallback colors (overridden by DMS dank-theme.toml when available)
-      colors = {
-        primary = {
-          background = "#232136";
-          foreground = "#e0def4";
-        };
-        cursor = {
-          text = "#232136";
-          cursor = "#e0def4";
-        };
-        selection = {
-          text = "#232136";
-          background = "#c4a7e7";
-        };
-        normal = {
-          black = "#393552";
-          red = "#eb6f92";
-          green = "#9ccfd8";
-          yellow = "#f6c177";
-          blue = "#3e8fb0";
-          magenta = "#c4a7e7";
-          cyan = "#ea9a97";
-          white = "#e0def4";
-        };
-        bright = {
-          black = "#6e6a86";
-          red = "#eb6f92";
-          green = "#9ccfd8";
-          yellow = "#f6c177";
-          blue = "#3e8fb0";
-          magenta = "#c4a7e7";
-          cyan = "#ea9a97";
-          white = "#e0def4";
-        };
-      };
+      # Colors provided by DMS dank-theme.toml import
     };
   };
 
@@ -183,15 +152,7 @@
 
       default-column-width { proportion 0.5; }
 
-      focus-ring {
-        width 2
-        active-color "#c4a7e7"
-        inactive-color "#393552"
-      }
-
-      border {
-        off
-      }
+      // focus-ring and border colors provided by DMS includes
     }
 
     // Spawn at startup
@@ -279,7 +240,7 @@
       Mod+Shift+T { spawn "bash" "-c" "alacritty --title Taskwarrior -e taskwarrior-tui && task synchronize"; }
       Mod+N { spawn "dms" "ipc" "call" "notifications" "toggleDoNotDisturb"; }
       Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
-      Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run ~/appimages/helium.AppImage"; }
+      Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run /home/${username}/appimages/helium.AppImage"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+Q { close-window; }
       Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall/" "-e" "opencode" "--agent" "wiki"; }
