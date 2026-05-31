@@ -18,7 +18,7 @@
     python3
     wakatime-cli
     #zellij
-    pipx
+    #NOTE: Temp pipx
     rustc
     cargo
     cargo-ui

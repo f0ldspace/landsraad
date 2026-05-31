@@ -33,7 +33,7 @@
     #./modules/forgejo.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
-    ./modules/desktop/gnome.nix
+    #./modules/desktop/gnome.nix
     ./modules/desktop/niri.nix
   ];
   boot.loader.systemd-boot.enable = true;

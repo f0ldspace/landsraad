@@ -141,7 +141,7 @@
 
     // Layout configuration
     layout {
-      gaps 12
+      gaps 8
       center-focused-column "never"
 
       preset-column-widths {
@@ -180,26 +180,11 @@
     }
 
     window-rule {
-      match app-id=r#"^org\.gnome\."#
-      match app-id="nautilus"
-      match app-id="nm-connection-editor"
-      match app-id="blueman-manager"
-      match title="Open File"
-      match title="Save File"
-      match title="Open Folder"
-
-      open-floating true
-    }
-    window-rule {
       match app-id="yazi"
       open-floating true
     }
     window-rule {
       match app-id="rmpc"
-      open-floating true
-    }
-    window-rule {
-      match title="Taskwarrior"
       open-floating true
     }
 
