@@ -20,7 +20,7 @@
     ./ai.nix
     # Servers
     ./servers/wakapi-server.nix
-    #./modules/taskwarrior-server.nix
+    ./servers/taskwarrior-server.nix
     ./servers/audiobookshelf-server.nix
     #./servers/navidrone.nix
     ./restic-backups.nix
@@ -33,7 +33,7 @@
     #./modules/forgejo.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
-    #./modules/desktop/gnome.nix
+    ./modules/desktop/gnome.nix
     ./modules/desktop/niri.nix
   ];
   boot.loader.systemd-boot.enable = true;
@@ -42,6 +42,8 @@
   boot.extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
   boot.kernelModules = [ "v4l2loopback" ];
   hardware.keyboard.qmk.enable = true;
+  services.mullvad-vpn.enable = true;
+  services.mullvad-vpn.package = pkgs.mullvad-vpn;
   services.udev.extraRules = ''
     # Via/QMK keyboard access
     KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
@@ -85,7 +87,14 @@
 
   services.hermes-agent = {
     enable = true;
-    settings.model.default = "anthropic/claude-sonnet-4";
+    settings = {
+      model = {
+        provider = "custom";
+        default = "qwen3.5:27b"; # whatever model you've pulled
+        base_url = "http://localhost:11434/v1";
+        context_length = 64000;
+      };
+    };
     #environmentFiles = [ config.sops.secrets."hermes-env".path ];
     addToSystemPackages = true;
   };
@@ -116,6 +125,7 @@
       "networkmanager"
       "wheel"
       "libvirtd"
+      "hermes"
     ];
     packages = with pkgs; [
     ];
