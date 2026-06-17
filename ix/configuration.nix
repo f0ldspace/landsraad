@@ -42,6 +42,13 @@
   boot.extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
   boot.kernelModules = [ "v4l2loopback" ];
   hardware.keyboard.qmk.enable = true;
+  xdg.mime.defaultApplications = {
+    "text/html" = "helium.desktop";
+    "x-scheme-handler/http" = "helium.desktop";
+    "x-scheme-handler/https" = "helium.desktop";
+    "x-scheme-handler/about" = "helium.desktop";
+    "x-scheme-handler/unknown" = "helium.desktop";
+  };
   services.mullvad-vpn.enable = true;
   services.mullvad-vpn.package = pkgs.mullvad-vpn;
   services.udev.extraRules = ''
@@ -90,7 +97,7 @@
     settings = {
       model = {
         provider = "custom";
-        default = "qwen3.5:27b"; # whatever model you've pulled
+        default = "qwen3.6:27b"; # whatever model you've pulled
         base_url = "http://localhost:11434/v1";
         context_length = 64000;
       };
@@ -124,6 +131,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "video"
       "libvirtd"
       "hermes"
     ];

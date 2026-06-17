@@ -2,6 +2,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     hermes-agent.url = "github:NousResearch/hermes-agent";
+    railoxide.url = "github:triamazikamno/railoxide";
     #sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     flake-utils.url = "github:numtide/flake-utils";
@@ -50,7 +51,7 @@
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
-            inputs.dms-plugin-registry.modules.default
+            inputs.dms-plugin-registry.nixosModules.default
             hermes-agent.nixosModules.default
             #inputs.sops-nix.nixosModules.sops
             ./configuration.nix
