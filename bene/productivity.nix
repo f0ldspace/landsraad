@@ -14,5 +14,6 @@
     signal-desktop
     anki
     obsidian
+    calibre
   ];
 }

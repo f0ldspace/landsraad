@@ -180,6 +180,7 @@ misc = {
         "$mod, F, fullscreen, 1"
         "$mod SHIFT, F, fullscreen, 0"
         "$mod, Space, togglefloating"
+        "$mod, P, pin"
 
         # Session
         "$mod, Escape, exec, hyprlock"

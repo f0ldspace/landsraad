@@ -97,7 +97,8 @@
   nixpkgs.config.allowUnfree = true;
   environment.variables.EDITOR = "codium";
   services.flatpak.enable = true;
-  #services.mullvad-vpn.enable = true;
+  services.mullvad-vpn.enable = true;
+  services.mullvad-vpn.package = pkgs.mullvad;
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -130,9 +131,10 @@
     mpv
     vlc
     plex-desktop
+    blender
 
     # VPN
-    mullvad-vpn
+    mullvad
 
     # VM
     qemu
@@ -157,6 +159,10 @@
   ];
 
   virtualisation.libvirtd.enable = true;
+  virtualisation.waydroid = {
+    enable = true;
+    package = pkgs.waydroid-nftables;
+  };
 
   services.udev.extraRules = ''
     SUBSYSTEM=="input", ATTRS{idVendor}=="056a", ATTRS{idProduct}=="037a", MODE="0000"

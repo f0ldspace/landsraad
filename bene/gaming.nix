@@ -11,7 +11,8 @@
 
   environment.systemPackages = with pkgs; [
     prismlauncher
-    osu-lazer-bin
     bolt-launcher
+    osu-lazer-bin
+    rusty-path-of-building
   ];
 }

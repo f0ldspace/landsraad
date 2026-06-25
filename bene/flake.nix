@@ -62,7 +62,7 @@
               nixpkgs.overlays = [
                 (import ./overlays/railway-wallet.nix)
                 (import ./overlays/fix-typeguard-sphinx.nix)
-                (import ./overlays/osu-lazer-bin.nix)
+                (import ./overlays/rusty-path-of-building.nix)
               ];
             }
           ];
