@@ -7,7 +7,7 @@ final: prev: {
       owner = "meehl";
       repo = "rusty-path-of-building";
       rev = "6b6098d3319dd9645532b77dcbca9322cd3966af";
-      hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      hash = "sha256-9YHXTUtTJO3GPf+NqASEkxf+a94doBGTjLyYruuxRg4=";
     };
 
     cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
