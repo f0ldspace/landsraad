@@ -12,10 +12,8 @@
   environment.systemPackages = with pkgs; [
     gamescope
     prismlauncher
-    osu-lazer
     openspeedrun
     mangohud
     protontricks
-    heroic
   ];
 }

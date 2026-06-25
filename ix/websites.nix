@@ -23,16 +23,7 @@ let
     };
 
   webApps = [
-    {
-      name = "Cryptee";
-      url = "https://crypt.ee/home";
-      icon = "crypt.png";
-    }
-    {
-      name = "Lesswrong";
-      url = "https://lesswrong.com";
-      icon = "lesswrong.png";
-    }
+
     {
       name = "Nix-Search";
       url = "https://search.nixos.org";
@@ -48,16 +39,7 @@ let
       url = "https://audiobookshelf.arrakis.computer";
       icon = "audiobookshelf.png";
     }
-    {
-      name = "EA Forum";
-      url = "https://forum.effectivealtruism.org/";
-      icon = "ea.png";
-    }
-    {
-      name = "mistral-le-chat";
-      url = "https://chat.mistral.ai/chat";
-      icon = "mistral.png";
-    }
+
   ];
 in
 {

@@ -14,9 +14,7 @@
     tinymist
     slack
     anki
-    speedtest-cli
     imagemagick
-    #wikit # nodePackages removed from nixpkgs
     glow
     taskwarrior3
     taskwarrior-tui

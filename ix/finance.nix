@@ -10,11 +10,8 @@
 }:
 {
   environment.systemPackages = with pkgs; [
-    monero-gui
     trezor-suite
     portfolio
-    cgt-calc
     inputs.railoxide.packages.${pkgs.system}.default
-    #railway-wallet
   ];
 }

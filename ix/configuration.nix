@@ -24,12 +24,12 @@
     ./servers/audiobookshelf-server.nix
     #./servers/navidrone.nix
     ./restic-backups.nix
-    #./modules/miniflux.nix
+    ./servers/miniflux.nix
     ./servers/searxng.nix
     ./servers/immich.nix
     #./servers/open-webui.nix
     #./modules/mediawiki.nix
-    #./servers/privatebin.nix
+    ./servers/privatebin.nix
     #./modules/forgejo.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)
@@ -206,8 +206,6 @@
     jq
     rockbox-utility
     mat2
-    # bambu-studio
-    qemu
     tor-browser
     libva-utils
     gparted
@@ -215,7 +213,6 @@
     fd
     ripgrep
     pkgs-pinned.bitwarden-desktop
-    # qemu_full
     localsend
     libation
     kdePackages.kdenlive
@@ -230,19 +227,16 @@
     mpd-mpris
     picard
     bleachbit
-    protonvpn-gui
     ffmpegthumbnailer
     satty
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
     waypaper
     ffmpeg
-    joplin-desktop
     runelite
     xclip
     plex-desktop
     yt-dlp
-    freetube
     calibre
     mpv
     signal-desktop
@@ -252,11 +246,9 @@
     (pkgs.writeShellScriptBin "trinity" ''
       exec ${inputs.trinity.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/nvim "$@"
     '')
-    wike
     vlc
     gnupg
     bolt-launcher
-    #TODO: uncomment rclone-ui
     restic
     rmpc
     mpc
