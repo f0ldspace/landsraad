@@ -192,6 +192,7 @@
   };
 
   # NOTE: SOFTWARE
+
   environment.systemPackages = with pkgs; [
     (pkgs.symlinkJoin {
       name = "protonmail-desktop";
@@ -207,6 +208,7 @@
     rockbox-utility
     mat2
     tor-browser
+    pam_u2f
     libva-utils
     gparted
     ungoogled-chromium
