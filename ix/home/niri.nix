@@ -105,237 +105,241 @@
   # Niri configuration
   xdg.configFile."niri/config.kdl".force = true;
   xdg.configFile."niri/config.kdl".text = ''
-        // DMS theme includes
-        include "dms/colors.kdl"
-        include "dms/layout.kdl"
-        include "dms/outputs.kdl"
-        include "dms/wpblur.kdl"
-        include "dms/alttab.kdl"
+    // DMS theme includes
+    include "dms/colors.kdl"
+    include "dms/layout.kdl"
+    include "dms/outputs.kdl"
+    include "dms/wpblur.kdl"
+    include "dms/alttab.kdl"
 
-        // Input configuration
-        input {
-          keyboard {
-            xkb {
-              layout "gb"
-              variant "mac"
-            }
-          }
-
-          touchpad {
-            tap
-            natural-scroll
-            accel-speed 0.2
-          }
-
-          mouse {
-            accel-speed 0.0
-          }
-
-          // focus-follows-mouse
+    // Input configuration
+    input {
+      keyboard {
+        xkb {
+          layout "gb"
+          variant "mac"
         }
+      }
 
-        // Output/display configuration
-        output "eDP-1" {
-          scale 1.0
-        }
+      touchpad {
+        tap
+        natural-scroll
+        accel-speed 0.2
+      }
 
-        // Layout configuration
-        layout {
-          gaps 8
-          center-focused-column "never"
+      mouse {
+        accel-speed 0.0
+      }
 
-          preset-column-widths {
-            proportion 0.33333
-            proportion 0.5
-            proportion 0.66667
-          }
+      // focus-follows-mouse
+    }
 
-          default-column-width { proportion 0.5; }
+    // Output/display configuration
+    output "eDP-1" {
+      scale 1.0
+    }
 
-          // focus-ring and border colors provided by DMS includes
-        }
+    // Layout configuration
+    layout {
+      gaps 8
+      center-focused-column "never"
 
-        // Spawn at startup
-        spawn-at-startup "xwayland-satellite"
-        // DMS spawns via niri.enableSpawn - no need for waybar/mako
-        spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
-        spawn-at-startup "nm-applet" "--indicator"
+      preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+      }
 
-        // Cursor
-        cursor {
-          xcursor-theme "BreezeX-RosePine-Linux"
-          xcursor-size 24
-        }
+      default-column-width { proportion 0.5; }
 
-        // Prefer server-side decorations
-        prefer-no-csd
+      // focus-ring and border colors provided by DMS includes
+    }
 
-        // Screenshot path
-        screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+    // Spawn at startup
+    spawn-at-startup "xwayland-satellite"
+    // DMS spawns via niri.enableSpawn - no need for waybar/mako
+    spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
+    spawn-at-startup "nm-applet" "--indicator"
 
-        // Window rules
-        window-rule {
-          geometry-corner-radius 0
-          clip-to-geometry true
-        }
+    // Cursor
+    cursor {
+      xcursor-theme "BreezeX-RosePine-Linux"
+      xcursor-size 24
+    }
 
-        window-rule {
-          match app-id="yazi"
-          open-floating true
-        }
-        window-rule {
-          match title="Taskwarrior"
-          open-floating true
-        }
+    // Prefer server-side decorations
+    prefer-no-csd
+
+    // Screenshot path
+    screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+    // Window rules
     window-rule {
-          match app-id="rmpc"
-          open-floating true
-        }
+      geometry-corner-radius 0
+      clip-to-geometry true
+    }
 
-        window-rule {
-          match app-id="Slack"
-          default-column-width { proportion 0.4; }
-        }
+    window-rule {
+      match app-id="yazi"
+      open-floating true
+    }
+    window-rule {
+      match title="Taskwarrior"
+      open-floating true
+    }
+    window-rule {
+      match app-id="termweather"
+      open-floating true
+    }
+    window-rule {
+      match app-id="rmpc"
+      open-floating true
+    }
 
-        window-rule {
-          match title="Huddle:"
-          default-column-width { proportion 0.2; }
-        }
-        window-rule {
-          match app-id="org.pwmt.zathura"
-          default-column-width { proportion 0.4; }
-        }
+    window-rule {
+      match app-id="Slack"
+      default-column-width { proportion 0.4; }
+    }
 
-        window-rule {
-          match title="OpenSpeedRun"
-          default-column-width { proportion 0.2; }
-        }
+    window-rule {
+      match title="Huddle:"
+      default-column-width { proportion 0.2; }
+    }
+    window-rule {
+      match app-id="org.pwmt.zathura"
+      default-column-width { proportion 0.4; }
+    }
 
-        window-rule {
-          match app-id="obsidian"
-          default-column-width { proportion 0.3; }
-        }
+    window-rule {
+      match title="OpenSpeedRun"
+      default-column-width { proportion 0.2; }
+    }
 
-        window-rule {
-          match app-id="wiki-nvim"
-          default-column-width { proportion 0.3; }
-        }
+    window-rule {
+      match app-id="obsidian"
+      default-column-width { proportion 0.3; }
+    }
+
+    window-rule {
+      match app-id="wiki-nvim"
+      default-column-width { proportion 0.3; }
+    }
 
 
-           // Keybindings
-        binds {
-          // Mod = Super/Logo key
-          Mod+T { spawn "alacritty"; }
-          Mod+Shift+T { spawn "bash" "-c" "alacritty --title Taskwarrior -e taskwarrior-tui && task synchronize"; }
-          Mod+N { spawn "dms" "ipc" "call" "notifications" "toggleDoNotDisturb"; }
-          Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
-          Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run /home/${username}/appimages/helium.AppImage"; }
-          Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
-          Mod+Q { close-window; }
-          Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall/" "-e" "opencode" "--agent" "wiki"; }
-          Mod+W { spawn "obsidian"; }
-          Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
+       // Keybindings
+    binds {
+      // Mod = Super/Logo key
+      Mod+T { spawn "alacritty"; }
+      Mod+Shift+T { spawn "bash" "-c" "alacritty --title Taskwarrior -e taskwarrior-tui && task synchronize"; }
+      Mod+N { spawn "dms" "ipc" "call" "notifications" "toggleDoNotDisturb"; }
+      Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+      Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run /home/${username}/appimages/helium.AppImage"; }
+      Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
+      Mod+Q { close-window; }
+      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall/" "-e" "opencode" "--agent" "wiki"; }
+      Mod+W { spawn "obsidian"; }
+      Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
+      Mod+I { spawn "alacritty" "--class" "termweather" "-e" "terminal-rain" "--sound"; }
+      // Vim-style navigation
+      Mod+H { focus-column-left; }
+      Mod+J { focus-workspace-down; }
+      Mod+K { focus-workspace-up; }
+      Mod+L { focus-column-right; }
 
-          // Vim-style navigation
-          Mod+H { focus-column-left; }
-          Mod+J { focus-workspace-down; }
-          Mod+K { focus-workspace-up; }
-          Mod+L { focus-column-right; }
+      Mod+Shift+H { move-column-left; }
+      Mod+Shift+J { move-window-to-workspace-down; }
+      Mod+Shift+K { move-window-to-workspace-up; }
+      Mod+Shift+L { move-column-right; }
 
-          Mod+Shift+H { move-column-left; }
-          Mod+Shift+J { move-window-to-workspace-down; }
-          Mod+Shift+K { move-window-to-workspace-up; }
-          Mod+Shift+L { move-column-right; }
+      // Arrow key navigation
+      Mod+Left { focus-column-left; }
+      Mod+Down { focus-window-down; }
+      Mod+Up { focus-window-up; }
+      Mod+Right { focus-column-right; }
 
-          // Arrow key navigation
-          Mod+Left { focus-column-left; }
-          Mod+Down { focus-window-down; }
-          Mod+Up { focus-window-up; }
-          Mod+Right { focus-column-right; }
+      Mod+Shift+Left { move-column-left; }
+      Mod+Shift+Down { move-window-down; }
+      Mod+Shift+Up { move-window-up; }
+      Mod+Shift+Right { move-column-right; }
 
-          Mod+Shift+Left { move-column-left; }
-          Mod+Shift+Down { move-window-down; }
-          Mod+Shift+Up { move-window-up; }
-          Mod+Shift+Right { move-column-right; }
+      // Speedrunning
+      // Mod+Y { spawn "bash" "-c" "if niri msg windows | grep -qF 'Title: \"OpenSpeedRun\"'; then openspeedrun-cli split; else alacritty --class yazi -e yazi; fi"; }
+      // Mod+U { spawn "openspeedrun-cli" "reset"; }
+      // Mod+I { spawn "openspeedrun-cli" "pause"; }
 
-          // Speedrunning
-          Mod+Y { spawn "bash" "-c" "if niri msg windows | grep -qF 'Title: \"OpenSpeedRun\"'; then openspeedrun-cli split; else alacritty --class yazi -e yazi; fi"; }
-          Mod+U { spawn "openspeedrun-cli" "reset"; }
-          Mod+I { spawn "openspeedrun-cli" "pause"; }
+      // Workspaces
+      Mod+1 { focus-workspace 1; }
+      Mod+2 { focus-workspace 2; }
+      Mod+3 { focus-workspace 3; }
+      Mod+4 { focus-workspace 4; }
+      Mod+5 { focus-workspace 5; }
+      Mod+6 { focus-workspace 6; }
+      Mod+7 { focus-workspace 7; }
+      Mod+8 { focus-workspace 8; }
+      Mod+9 { focus-workspace 9; }
 
-          // Workspaces
-          Mod+1 { focus-workspace 1; }
-          Mod+2 { focus-workspace 2; }
-          Mod+3 { focus-workspace 3; }
-          Mod+4 { focus-workspace 4; }
-          Mod+5 { focus-workspace 5; }
-          Mod+6 { focus-workspace 6; }
-          Mod+7 { focus-workspace 7; }
-          Mod+8 { focus-workspace 8; }
-          Mod+9 { focus-workspace 9; }
+      Mod+Shift+1 { move-column-to-workspace 1; }
+      Mod+Shift+2 { move-column-to-workspace 2; }
+      Mod+Shift+3 { move-column-to-workspace 3; }
+      Mod+Shift+4 { move-column-to-workspace 4; }
+      Mod+Shift+5 { move-column-to-workspace 5; }
+      Mod+Shift+6 { move-column-to-workspace 6; }
+      Mod+Shift+7 { move-column-to-workspace 7; }
+      Mod+Shift+8 { move-column-to-workspace 8; }
+      Mod+Shift+9 { move-column-to-workspace 9; }
 
-          Mod+Shift+1 { move-column-to-workspace 1; }
-          Mod+Shift+2 { move-column-to-workspace 2; }
-          Mod+Shift+3 { move-column-to-workspace 3; }
-          Mod+Shift+4 { move-column-to-workspace 4; }
-          Mod+Shift+5 { move-column-to-workspace 5; }
-          Mod+Shift+6 { move-column-to-workspace 6; }
-          Mod+Shift+7 { move-column-to-workspace 7; }
-          Mod+Shift+8 { move-column-to-workspace 8; }
-          Mod+Shift+9 { move-column-to-workspace 9; }
+      // Window sizing
+      Mod+F { maximize-column; }
+      Mod+Shift+F { fullscreen-window; }
+      Mod+Minus { set-column-width "-10%"; }
+      Mod+Apostrophe { set-column-width "+10%"; }
 
-          // Window sizing
-          Mod+F { maximize-column; }
-          Mod+Shift+F { fullscreen-window; }
-          Mod+Minus { set-column-width "-10%"; }
-          Mod+Apostrophe { set-column-width "+10%"; }
+      // Column management (vertical stacking)
+      Mod+C { consume-window-into-column; }
+      Mod+Shift+C { expel-window-from-column; }
 
-          // Column management (vertical stacking)
-          Mod+C { consume-window-into-column; }
-          Mod+Shift+C { expel-window-from-column; }
+      // Floating
+      Mod+Space { toggle-window-floating; }
 
-          // Floating
-          Mod+Space { toggle-window-floating; }
+      // Clipboard (DMS)
+      Mod+V { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
 
-          // Clipboard (DMS)
-          Mod+V { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
+      // Lock screen (DMS)
+      Mod+Escape { spawn "dms" "ipc" "call" "lock" "lock"; }
 
-          // Lock screen (DMS)
-          Mod+Escape { spawn "dms" "ipc" "call" "lock" "lock"; }
+      // Screenshot (DMS)
+      Print { spawn "dms" "ipc" "call" "niri" "screenshot"; }
+      Ctrl+Print { spawn "dms" "ipc" "call" "niri" "screenshotScreen"; }
+      Alt+Print { spawn "dms" "ipc" "call" "niri" "screenshotWindow"; }
 
-          // Screenshot (DMS)
-          Print { spawn "dms" "ipc" "call" "niri" "screenshot"; }
-          Ctrl+Print { spawn "dms" "ipc" "call" "niri" "screenshotScreen"; }
-          Alt+Print { spawn "dms" "ipc" "call" "niri" "screenshotWindow"; }
+      // Screenshot with satty annotation (keep as fallback)
+      Mod+Print { spawn "bash" "-c" "grim -g \"$(slurp)\" - | satty -f -"; }
 
-          // Screenshot with satty annotation (keep as fallback)
-          Mod+Print { spawn "bash" "-c" "grim -g \"$(slurp)\" - | satty -f -"; }
+      // Media keys (DMS)
+      XF86AudioRaiseVolume { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
+      XF86AudioLowerVolume { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
+      XF86AudioMute { spawn "dms" "ipc" "call" "audio" "mute"; }
+      XF86AudioMicMute { spawn "dms" "ipc" "call" "audio" "micmute"; }
 
-          // Media keys (DMS)
-          XF86AudioRaiseVolume { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
-          XF86AudioLowerVolume { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
-          XF86AudioMute { spawn "dms" "ipc" "call" "audio" "mute"; }
-          XF86AudioMicMute { spawn "dms" "ipc" "call" "audio" "micmute"; }
+      XF86MonBrightnessUp { spawn "dms" "ipc" "call" "brightness" "increment" "5"; }
+      XF86MonBrightnessDown { spawn "dms" "ipc" "call" "brightness" "decrement" "5"; }
 
-          XF86MonBrightnessUp { spawn "dms" "ipc" "call" "brightness" "increment" "5"; }
-          XF86MonBrightnessDown { spawn "dms" "ipc" "call" "brightness" "decrement" "5"; }
+      XF86AudioPlay { spawn "dms" "ipc" "call" "mpris" "playPause"; }
+      XF86AudioNext { spawn "dms" "ipc" "call" "mpris" "next"; }
+      XF86AudioPrev { spawn "dms" "ipc" "call" "mpris" "previous"; }
 
-          XF86AudioPlay { spawn "dms" "ipc" "call" "mpris" "playPause"; }
-          XF86AudioNext { spawn "dms" "ipc" "call" "mpris" "next"; }
-          XF86AudioPrev { spawn "dms" "ipc" "call" "mpris" "previous"; }
+      // DMS panels
+      Mod+A { spawn "dms" "ipc" "call" "control-center" "toggle"; }
+      Mod+Shift+N { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+      Mod+P { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+      Mod+Shift+S { spawn "dms" "ipc" "call" "settings" "toggle"; }
 
-          // DMS panels
-          Mod+A { spawn "dms" "ipc" "call" "control-center" "toggle"; }
-          Mod+Shift+N { spawn "dms" "ipc" "call" "notifications" "toggle"; }
-          Mod+P { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
-          Mod+Shift+S { spawn "dms" "ipc" "call" "settings" "toggle"; }
+      // Overview
+      Mod+O { toggle-overview; }
 
-          // Overview
-          Mod+O { toggle-overview; }
-
-          // Power controls
-          Mod+Shift+E { quit; }
-        }
+      // Power controls
+      Mod+Shift+E { quit; }
+    }
   '';
 
   # Waybar configuration (disabled - DMS provides its own bar)

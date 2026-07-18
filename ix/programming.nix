@@ -9,6 +9,7 @@
     neovim
     tokei
     lazygit
+    opencode-desktop
     git
     bc
     gh
