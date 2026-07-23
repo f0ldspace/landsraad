@@ -19,8 +19,8 @@
     ./programming.nix
     ./ai.nix
     # Servers
-    ./servers/wakapi-server.nix
-    ./servers/taskwarrior-server.nix
+    #./servers/wakapi-server.nix
+    #./servers/taskwarrior-server.nix
     ./servers/audiobookshelf-server.nix
     #./servers/navidrone.nix
     ./restic-backups.nix
@@ -92,19 +92,6 @@
 
   # NOTE: SERVICES
 
-  services.hermes-agent = {
-    enable = true;
-    settings = {
-      model = {
-        provider = "custom";
-        default = "qwen3.6:27b"; # whatever model you've pulled
-        base_url = "http://localhost:11434/v1";
-        context_length = 64000;
-      };
-    };
-    #environmentFiles = [ config.sops.secrets."hermes-env".path ];
-    addToSystemPackages = true;
-  };
   services.mpd = {
     enable = true;
     user = username;
@@ -133,7 +120,6 @@
       "wheel"
       "video"
       "libvirtd"
-      "hermes"
     ];
     packages = with pkgs; [
     ];
@@ -203,6 +189,7 @@
       '';
     })
     wget
+    wtype
     jq
     rockbox-utility
     mat2

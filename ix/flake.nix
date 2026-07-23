@@ -1,8 +1,10 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-    hermes-agent.url = "github:NousResearch/hermes-agent";
+    #hermes-agent.url = "github:NousResearch/hermes-agent";
     railoxide.url = "github:triamazikamno/railoxide";
+    handy.url = "github:cjpais/Handy";
+    handy.inputs.nixpkgs.follows = "nixpkgs";
     #sops-nix.url = "github:Mic92/sops-nix";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     flake-utils.url = "github:numtide/flake-utils";
@@ -28,8 +30,8 @@
   outputs =
     {
       self,
-      hermes-agent,
       nixpkgs,
+      handy,
       ...
     }@inputs:
     {
@@ -47,8 +49,12 @@
             { nixpkgs.hostPlatform = "x86_64-linux"; }
             inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
             inputs.dms-plugin-registry.nixosModules.default
-            hermes-agent.nixosModules.default
             #inputs.sops-nix.nixosModules.sops
+            handy.nixosModules.default
+            {
+              programs.handy.enable = true;
+              # Optional: configure typing tool
+            }
             ./configuration.nix
             inputs.home-manager.nixosModules.home-manager
             {
