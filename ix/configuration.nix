@@ -30,6 +30,7 @@
     #./servers/open-webui.nix
     #./modules/mediawiki.nix
     ./servers/privatebin.nix
+    #./servers/owncast.nix
     #./modules/forgejo.nix
     ./ix-cloudflared.nix
     # Desktop environments (both available, choose at login)

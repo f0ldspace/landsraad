@@ -244,7 +244,7 @@
       Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall/" "-e" "opencode" "--agent" "wiki"; }
       Mod+W { spawn "obsidian"; }
       Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
-      Mod+I { spawn "alacritty" "--class" "termweather" "-e" "terminal-rain" "--location" "manchester,UK"; }
+      Mod+I { spawn "alacritty" "--class" "termweather" "-e" "terminal-rain" "--location" "rochdale,UK"; }
       Mod+Ctrl+S {spawn "bash" "-c" "handy --toggle-transcription"; }
       // Vim-style navigation
       Mod+H { focus-column-left; }
