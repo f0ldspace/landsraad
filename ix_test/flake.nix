@@ -26,7 +26,7 @@
     }@inputs:
     {
       nixosConfigurations = {
-        ix = nixpkgs.lib.nixosSystem {
+        bene = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs;
             username = "deviate";
