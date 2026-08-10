@@ -26,23 +26,6 @@
   boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # NVIDIA GPU configuration
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-    open = false; # Use proprietary driver
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
-
-  # Hybrid graphics - both AMD iGPU and NVIDIA dGPU
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true; # For Steam/gaming
-  };
-
   #  nix.gc = {
   #  automatic = true;
   #  dates = "weekly";
@@ -116,8 +99,6 @@
     extraPkgs = pkgs: [
       pkgs.icu
       pkgs.libxcrypt-legacy
-      pkgs.python312
-      pkgs.python312Packages.torch
     ];
   };
   # Minimal package set

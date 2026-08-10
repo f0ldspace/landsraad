@@ -10,6 +10,9 @@
 }:
 {
   environment.systemPackages = with pkgs; [
-    trezor-suite
+    slack
+    anki
+    obsidian
+    calibre
   ];
 }

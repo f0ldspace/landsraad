@@ -1,57 +1,69 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./common.nix ];
+  imports = [
+    ./common.nix
+  ];
 
+  # Use GDM as display manager (shows Niri as a session option)
   services.xserver.enable = true;
   services.displayManager.gdm.enable = true;
 
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
+  # Enable Niri compositor
+  programs.niri.enable = true;
 
+  # Enable XWayland for X11 apps (Steam, games, etc.)
+  programs.xwayland.enable = true;
+
+  # XDG portal for screen sharing, file dialogs, etc.
   xdg.portal = {
     enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-hyprland
-    ];
-    # Explicit backend routing. Without this, xdg-desktop-portal-gtk ships
-    # `UseIn=gnome` and is never activated under Hyprland, leaving OpenURI
-    # (and FileChooser/AppChooser) unimplemented. This breaks sandboxed apps
-    # like the r2modman Flatpak, which use the OpenURI portal to launch
-    # steam:// links. Routing the default to hyprland → gtk fixes it while
-    # keeping screen capture on the Hyprland backend.
-    config = {
-      common.default = [ "gtk" ];
-      hyprland = {
-        default = [ "hyprland" "gtk" ];
-        "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
-        "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
-      };
-    };
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
+  # Polkit for privilege escalation dialogs
   security.polkit.enable = true;
+
+  # PAM configuration for swaylock authentication
+  security.pam.services.swaylock = { };
+
+  # Enable dconf for GTK settings to work in niri session
   programs.dconf.enable = true;
+
+  # GNOME Keyring for secrets (used by both GNOME and niri)
   services.gnome.gnome-keyring.enable = true;
 
+  # Environment variables for Wayland compatibility
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     MOZ_ENABLE_WAYLAND = "1";
     QT_QPA_PLATFORM = "wayland";
+    # Don't force SDL to wayland - breaks Steam and many games
+    # SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
-    LD_LIBRARY_PATH = "${pkgs.libayatana-appindicator}/lib\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}";
-    QSG_RHI_BACKEND = "vulkan";
   };
 
+  # Niri packages
   environment.systemPackages = with pkgs; [
+    # XWayland for X11 apps
+    xwayland-satellite
+
+    # Status bar
+    waybar
+    # Launcher
+    wofi
+
+    # Notifications
+    mako
+
+    # Screen lock
+    swaylock-effects
+    swayidle
+
     # Screenshots
     grim
     slurp
     satty
-    swappy
 
     # Recording
     wf-recorder
@@ -64,10 +76,6 @@
     wl-clipboard
     cliphist
 
-    # Launcher
-    wofi
-    wlogout
-
     # Utilities
     brightnessctl
     playerctl
@@ -77,17 +85,13 @@
     wdisplays
     wlsunset
     networkmanagerapplet
-    libnotify
-    fish
 
     # GTK theming support
     gnome-themes-extra
     gtk-engine-murrine
-
-    # Status bar
-    waybar
   ];
 
+  # Start polkit agent for privilege escalation
   systemd.user.services.polkit-gnome-agent = {
     description = "Polkit GNOME Authentication Agent";
     wantedBy = [ "graphical-session.target" ];

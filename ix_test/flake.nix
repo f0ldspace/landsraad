@@ -1,22 +1,23 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
     flake-utils.url = "github:numtide/flake-utils";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
+    mistral-vibe = {
+      url = "github:mistralai/mistral-vibe";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    trinity.url = "path:/home/f0ld/trinity";
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs-pinned.url = "github:NixOS/nixpkgs/fe416aaedd397cacb33a610b33d60ff2b431b127";
-    nixpkgs-bolt.url = "github:NixOS/nixpkgs/e7a3ca8092b61ff85b6a45bf863ea2b2d6a661b3";
     nixvim = {
       url = "github:nix-community/nixvim";
       # inputs.nixpkgs.follows = "nixpkgs";  # optional but recommended
@@ -26,15 +27,14 @@
     {
       self,
       nixpkgs,
-      nixpkgs-bolt,
       ...
     }@inputs:
     {
       nixosConfigurations = {
-        bene = nixpkgs.lib.nixosSystem {
+        ix = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs;
-            username = "deviate";
+            username = "f0ld";
             pkgs-pinned = import inputs.nixpkgs-pinned {
               system = "x86_64-linux";
               config.allowUnfree = true;
@@ -42,28 +42,22 @@
           };
           modules = [
             { nixpkgs.hostPlatform = "x86_64-linux"; }
+            inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
             ./configuration.nix
             inputs.home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.deviate = import ./home/deviate.nix;
+              home-manager.users.f0ld = import ./home/f0ld.nix;
               home-manager.extraSpecialArgs = {
                 inherit inputs;
-                username = "deviate";
-                pkgs-pinned = import inputs.nixpkgs-pinned {
-                  system = "x86_64-linux";
-                  config.allowUnfree = true;
-                };
+                username = "f0ld";
               };
             }
             {
               nixpkgs.overlays = [
+                #(import ./overlays/railway-wallet.nix)
                 (import ./overlays/fix-typeguard-sphinx.nix)
-                (import ./overlays/fix-pipx.nix)
-                (final: prev: {
-                  bolt-launcher = (import nixpkgs-bolt { system = "x86_64-linux"; config.allowUnfree = true; }).bolt-launcher;
-                })
               ];
             }
           ];

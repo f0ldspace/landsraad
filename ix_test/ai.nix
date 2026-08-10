@@ -4,14 +4,11 @@
   inputs,
   ...
 }:
-
 {
-
-  programs.steam.enable = true;
-
   environment.systemPackages = with pkgs; [
-    prismlauncher
-    bolt-launcher
-    osu-lazer-bin
+    claude-code
+    claude-monitor
+    vulkan-tools
+    opencode
   ];
 }

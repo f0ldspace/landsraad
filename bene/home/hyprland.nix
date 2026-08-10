@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  pkgs-pinned,
   lib,
   username,
   ...
@@ -35,6 +36,7 @@ in
 {
   # --- Cursor ---
   home.pointerCursor = {
+    enable = true;
     gtk.enable = true;
     name = "catppuccin-mocha-mauve-cursors";
     package = pkgs.catppuccin-cursors.mochaMauve;
@@ -61,7 +63,7 @@ in
     enable = true;
     theme = {
       name = "catppuccin-mocha-mauve-standard+default";
-      package = pkgs.catppuccin-gtk.override {
+      package = pkgs-pinned.catppuccin-gtk.override {
         accents = [ "mauve" ];
         variant = "mocha";
       };
@@ -77,14 +79,36 @@ in
     };
   };
 
+  # The home-manager Hyprland module points the portal service at this user
+  # profile's portals dir via NIX_XDG_DESKTOP_PORTAL_DIR, which otherwise
+  # ships only the Hyprland backend. Add the gtk backend so OpenURI /
+  # FileChooser / Notification are implemented — without it the r2modman
+  # Flatpak can't launch steam:// links (OpenURI portal is missing).
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-hyprland
+    ];
+    config = {
+      common.default = [ "gtk" ];
+      hyprland = {
+        default = [ "hyprland" "gtk" ];
+        "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
+        "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
+      };
+    };
+  };
+
   # --- Hyprland ---
   wayland.windowManager.hyprland = {
     enable = true;
+    configType = "hyprlang";
     settings = {
       monitor = ",highrr,auto,1";
 
       exec-once = [
-        "swww-daemon"
+        "awww-daemon"
         "waybar"
         "nm-applet --indicator"
         "wl-paste --watch cliphist store"
@@ -130,7 +154,6 @@ in
       };
 
       dwindle = {
-        pseudotile = true;
         preserve_split = true;
       };
 
@@ -320,7 +343,7 @@ misc = {
 
       modules-left = [ "hyprland/workspaces" "hyprland/window" ];
       modules-center = [ "clock" ];
-      modules-right = [ "pulseaudio" "network" "cpu" "memory" "tray" ];
+      modules-right = [ "custom/slack" "custom/signal" "pulseaudio" "network" "cpu" "memory" "tray" ];
 
       "hyprland/workspaces" = {
         format = "{id}";
@@ -348,7 +371,7 @@ misc = {
 
       network = {
         format-wifi = "  {essid}";
-        format-ethernet = "  {ifname}";
+        format-ethernet = "";
         format-disconnected = " disconnected";
         tooltip-format = "{ipaddr}";
       };
@@ -365,6 +388,18 @@ misc = {
 
       tray = {
         spacing = 8;
+      };
+
+      "custom/slack" = {
+        format = "";
+        tooltip-format = "Slack";
+        on-click = "slack";
+      };
+
+      "custom/signal" = {
+        format = "";
+        tooltip-format = "Signal";
+        on-click = "signal-desktop";
       };
     }];
 
@@ -448,6 +483,25 @@ misc = {
 
       #tray {
         padding: 0 8px;
+      }
+
+      #custom-slack,
+      #custom-signal {
+        padding: 0 8px;
+        font-size: 15px;
+      }
+
+      #custom-slack {
+        color: #cba6f7;
+      }
+
+      #custom-signal {
+        color: #89b4fa;
+      }
+
+      #custom-slack:hover,
+      #custom-signal:hover {
+        color: #cdd6f4;
       }
     '';
   };
