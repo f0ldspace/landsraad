@@ -7,11 +7,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    mistral-vibe = {
-      url = "github:mistralai/mistral-vibe";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
     trinity.url = "path:/home/f0ld/trinity";
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
@@ -34,7 +29,7 @@
         ix = nixpkgs.lib.nixosSystem {
           specialArgs = {
             inherit inputs;
-            username = "f0ld";
+            username = "deviate";
             pkgs-pinned = import inputs.nixpkgs-pinned {
               system = "x86_64-linux";
               config.allowUnfree = true;
@@ -48,15 +43,14 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.f0ld = import ./home/f0ld.nix;
+              home-manager.users.deviate = import ./home/deviate.nix;
               home-manager.extraSpecialArgs = {
                 inherit inputs;
-                username = "f0ld";
+                username = "deviate";
               };
             }
             {
               nixpkgs.overlays = [
-                #(import ./overlays/railway-wallet.nix)
                 (import ./overlays/fix-typeguard-sphinx.nix)
               ];
             }
