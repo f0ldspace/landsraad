@@ -29,9 +29,6 @@
     nerd-fonts.jetbrains-mono
     nerd-fonts.iosevka
     nerd-fonts.iosevka-term
-    nerd-fonts.caskaydia-cove
-    rubik
-    material-symbols
   ];
 
   # Shared desktop utilities

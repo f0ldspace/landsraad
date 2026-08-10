@@ -11,7 +11,6 @@
 {
   environment.systemPackages = with pkgs; [
     slack
-    signal-desktop
     anki
     obsidian
     calibre

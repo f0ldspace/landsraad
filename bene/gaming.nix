@@ -10,8 +10,10 @@
   programs.steam.enable = true;
 
   environment.systemPackages = with pkgs; [
+    gamescope
     prismlauncher
+    osu-lazer
+    mangohud
     bolt-launcher
-    osu-lazer-bin
   ];
 }

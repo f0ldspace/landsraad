@@ -11,5 +11,6 @@
 {
   environment.systemPackages = with pkgs; [
     trezor-suite
+    cgt-calc
   ];
 }

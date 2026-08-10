@@ -49,7 +49,7 @@
     xwayland-satellite
 
     # Status bar
-    quickshell
+    waybar
     # Launcher
     wofi
 
@@ -64,13 +64,12 @@
     grim
     slurp
     satty
-    swappy
 
     # Recording
     wf-recorder
 
     # Wallpaper
-    swww
+    awww
     waypaper
 
     # Clipboard
@@ -89,7 +88,6 @@
 
     # GTK theming support
     gnome-themes-extra
-    gtk-engine-murrine
   ];
 
   # Start polkit agent for privilege escalation

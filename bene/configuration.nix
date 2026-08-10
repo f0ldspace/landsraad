@@ -19,21 +19,52 @@
     ./ai.nix
     # Desktop environments (both available, choose at login)
     ./modules/desktop/gnome.nix
-    ./modules/desktop/hyprland.nix
+    ./modules/desktop/niri.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  #  nix.gc = {
-  #  automatic = true;
-  #  dates = "weekly";
-  #  options = "--delete-older-than 14d";
-  #};
+  # Hardware
+  # nvidia gpu
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = false;
+    powerManagement.finegrained = false;
+    open = false; # Use proprietary driver
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
+
+  # Hybrid graphics - both AMD iGPU and NVIDIA dGPU
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true; # For Steam/gaming
+  };
+
+  hardware.keyboard.qmk.enable = true;
+  services.udev.extraRules = ''
+    # Via/QMK keyboard access
+    KERNEL=="hidraw*", SUBSYSTEM=="hidraw", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"
+  '';
+
+  hardware.opentabletdriver.enable = true; # Tablet driver
+
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+  boot.kernelParams = [ "btusb.enable_autosuspend=0" ];
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
 
   networking.hostName = "bene"; # Define your hostname.
-  system.nixos.label = "bene";
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  system.nixos.label = "landsraad";
 
   networking.networkmanager.enable = true;
   time.timeZone = "Europe/London";
@@ -52,47 +83,38 @@
 
   services.printing.enable = true;
 
-  hardware.opentabletdriver.enable = true;
-
   users.users.${username} = {
     isNormalUser = true;
     description = username;
     extraGroups = [
       "networkmanager"
       "wheel"
-      "input"
-      "libvirtd"
     ];
     packages = with pkgs; [
     ];
   };
+
+  programs.nix-ld.enable = true;
   programs.firefox.enable = true;
-  #services.ollama = {
-  #  enable = true;
-  #  package = pkgs.ollama-vulkan;
-  #  environmentVariables = {
-  #    OLLAMA_KV_CACHE_TYPE = "q8_0";
-  #    OLLAMA_KEEP_ALIVE = "30m";
-  #    OLLAMA_NUM_CTX = "65536";
-  #  };
-  #};
+
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-vulkan;
+    environmentVariables = {
+      OLLAMA_KV_CACHE_TYPE = "q8_0";
+      OLLAMA_KEEP_ALIVE = "30m";
+      OLLAMA_NUM_CTX = "65536";
+    };
+  };
 
   nixpkgs.config.allowUnfree = true;
   environment.variables.EDITOR = "codium";
   services.flatpak.enable = true;
-  services.mullvad-vpn.enable = true;
-  services.mullvad-vpn.package = pkgs.mullvad;
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
 
-  # Mandarin support
-  #fonts.packages = with pkgs; [
-  #  noto-fonts-cjk-sans
-  #  noto-fonts-cjk-serif
-
-  #];
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
   programs.appimage.package = pkgs.appimage-run.override {
@@ -101,54 +123,44 @@
       pkgs.libxcrypt-legacy
     ];
   };
-  # Minimal package set
-  environment.systemPackages = with pkgs; [
-    # Browsers
-    firefox
-    ungoogled-chromium
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
-    # Media players
-    mpv
-    vlc
-    plex-desktop
-    blender
+  # NOTE: SOFTWARE
+  environment.systemPackages = with pkgs; [
 
     # VPN
     mullvad
 
-    # VM
-    qemu
-    virt-manager
-
-    # Basic utilities
+    # utilities
     wget
     jq
-    fd
-    ripgrep
-    btop
     xclip
+    btop
+    fd
     gnupg
+    ripgrep
+    mat2
 
-    # Keyboard utility
+    # Keyboard
     wootility
 
     # Wayland tools
     waypaper
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
+
+    # Media
+    plex-desktop
+    vlc
+    mpv
+
+    libva-utils
+    gparted
+    satty
+    signal-desktop
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
-  virtualisation.libvirtd.enable = true;
-  virtualisation.waydroid = {
-    enable = true;
-    package = pkgs.waydroid-nftables;
-  };
-
-  services.udev.extraRules = ''
-    SUBSYSTEM=="input", ATTRS{idVendor}=="056a", ATTRS{idProduct}=="037a", MODE="0000"
-  '';
-
   networking.firewall.enable = true;
-  system.stateVersion = "25.05";
+
+  system.stateVersion = "25.05"; # Did you read the comment?
 }

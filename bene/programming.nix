@@ -6,13 +6,20 @@
 }:
 {
   environment.systemPackages = with pkgs; [
-    git
+    neovim
+    tokei
     lazygit
+    git
+    bc
     gh
     vscodium-fhs
     python3
     pipx
+    rustc
+    cargo
+    cargo-ui
     nodejs_24
+    rust-analyzer
     godot_4
   ];
 }

@@ -18,7 +18,6 @@
   environment.systemPackages = with pkgs; [
     gnome-tweaks
     gnome-themes-extra
-    gtk-engine-murrine
     sassc
     ocs-url
   ];
