@@ -165,13 +165,11 @@
 
       // Vim-style navigation
       Mod+H { focus-column-left; }
-      Mod+J { focus-workspace-down; }
-      Mod+K { focus-workspace-up; }
+      Mod+Tab { focus-workspace-down; }
+      Mod+Shift+Tab { focus-workspace-up; }
       Mod+L { focus-column-right; }
 
       Mod+Shift+H { move-column-left; }
-      Mod+Shift+J { move-window-to-workspace-down; }
-      Mod+Shift+K { move-window-to-workspace-up; }
       Mod+Shift+L { move-column-right; }
 
       // Arrow key navigation
