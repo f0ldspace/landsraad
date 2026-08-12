@@ -96,7 +96,8 @@
 
   programs.nix-ld.enable = true;
   programs.firefox.enable = true;
-
+  
+  services.mullvad-vpn.enable = true;
   services.ollama = {
     enable = true;
     package = pkgs.ollama-vulkan;
