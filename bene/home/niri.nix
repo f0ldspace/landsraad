@@ -8,11 +8,13 @@
 
 {
   home.pointerCursor = {
-  enable = true;
-  gtk.enable = true;
-  x11.enable = true;
+    enable = true;
+    gtk.enable = true;
+    x11.enable = true;
+    name = "catppuccin-mocha-mauve-cursors";
+    package = pkgs.catppuccin-cursors.mochaMauve;
+    size = 24;
   };
-  catppuccin.cursors.enable = true;
 
   dconf.enable = true;
 
@@ -33,9 +35,51 @@
     gtk4 = { theme = null; extraConfig = { gtk-decoration-layout = ""; }; };
   };
 
+  # Alacritty configuration
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      general.import = [
+        "~/.config/alacritty/dank-theme.toml"
+      ];
+
+      font = {
+        size = 12.0;
+        normal = {
+          family = "JetBrainsMono Nerd Font";
+          style = "Regular";
+        };
+        bold = {
+          family = "JetBrainsMono Nerd Font";
+          style = "Bold";
+        };
+        italic = {
+          family = "JetBrainsMono Nerd Font";
+          style = "Italic";
+        };
+      };
+
+      window = {
+        padding = {
+          x = 8;
+          y = 8;
+        };
+        opacity = 0.95;
+      };
+
+    };
+  };
+
   # Niri configuration
   xdg.configFile."niri/config.kdl".force = true;
   xdg.configFile."niri/config.kdl".text = ''
+    // DMS theme includes
+    include "dms/colors.kdl"
+    include "dms/layout.kdl"
+    include "dms/outputs.kdl"
+    include "dms/wpblur.kdl"
+    include "dms/alttab.kdl"
+
     // Input configuration
     input {
       keyboard {
@@ -58,10 +102,7 @@
       // focus-follows-mouse
     }
 
-    // Output/display configuration
-    output "eDP-1" {
-      scale 1.0
-    }
+    // Output/display configuration provided by DMS via dms/outputs.kdl
 
     // Layout configuration
     layout {
@@ -77,28 +118,16 @@
 
       default-column-width { proportion 0.5; }
 
-      focus-ring {
-        width 2
-        active-color "#c4a7e7"
-        inactive-color "#393552"
-      }
-
-      border {
-        off
-      }
-
       shadow {
         on
       }
+
+      // focus-ring and border colors provided by DMS
     }
 
     // Spawn at startup
     spawn-at-startup "xwayland-satellite"
-    spawn-at-startup "waybar"
-    spawn-at-startup "mako"
-    spawn-at-startup "awww-daemon"
     spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
-    spawn-at-startup "swayidle" "-w" "timeout" "1800" "swaylock -f" "timeout" "2700" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors" "before-sleep" "swaylock -f"
     spawn-at-startup "nm-applet" "--indicator"
 
     // Cursor
@@ -154,8 +183,8 @@
     binds {
       // Mod = Super/Logo key
       Mod+Return { spawn "alacritty"; }
-      Mod+N { spawn "makoctl" "mode" "-t" "do-not-disturb"; }
-      Mod+D { spawn "wofi" "--show" "drun"; }
+      Mod+N { spawn "dms" "ipc" "call" "notifications" "toggleDoNotDisturb"; }
+      Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
       Mod+B { spawn "zen"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+Q { close-window; }
@@ -222,32 +251,37 @@
       // Floating
       Mod+Space { toggle-window-floating; }
 
-      // Clipboard
-      Mod+V { spawn "bash" "-c" "cliphist list | wofi --dmenu | cliphist decode | wl-copy"; }
+      // Clipboard (DMS)
+      Mod+V { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
 
-      // Lock screen
-      Mod+Escape { spawn "swaylock"; }
+      // Lock screen (DMS)
+      Mod+Escape { spawn "dms" "ipc" "call" "lock" "lock"; }
 
       // Screenshot
       Mod+P { screenshot; }
-      Ctrl+Print { screenshot-screen; }
-      Alt+Print { screenshot-window; }
+      Ctrl+Print { spawn "dms" "ipc" "call" "niri" "screenshotScreen"; }
+      Alt+Print { spawn "dms" "ipc" "call" "niri" "screenshotWindow"; }
 
       // Screenshot with satty annotation
       Mod+Shift+P { spawn "bash" "-c" "grim -g \"$(slurp)\" - | satty -f -"; }
 
-      // Media keys
-      XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-      XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-      XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-      XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+      // Media keys (DMS)
+      XF86AudioRaiseVolume { spawn "dms" "ipc" "call" "audio" "increment" "5"; }
+      XF86AudioLowerVolume { spawn "dms" "ipc" "call" "audio" "decrement" "5"; }
+      XF86AudioMute { spawn "dms" "ipc" "call" "audio" "mute"; }
+      XF86AudioMicMute { spawn "dms" "ipc" "call" "audio" "micmute"; }
 
-      XF86MonBrightnessUp { spawn "brightnessctl" "set" "5%+"; }
-      XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+      XF86MonBrightnessUp { spawn "dms" "ipc" "call" "brightness" "increment" "5"; }
+      XF86MonBrightnessDown { spawn "dms" "ipc" "call" "brightness" "decrement" "5"; }
 
-      XF86AudioPlay { spawn "playerctl" "play-pause"; }
-      XF86AudioNext { spawn "playerctl" "next"; }
-      XF86AudioPrev { spawn "playerctl" "previous"; }
+      XF86AudioPlay { spawn "dms" "ipc" "call" "mpris" "playPause"; }
+      XF86AudioNext { spawn "dms" "ipc" "call" "mpris" "next"; }
+      XF86AudioPrev { spawn "dms" "ipc" "call" "mpris" "previous"; }
+
+      // DMS panels
+      Mod+A { spawn "dms" "ipc" "call" "control-center" "toggle"; }
+      Mod+Shift+N { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+      Mod+Shift+S { spawn "dms" "ipc" "call" "settings" "toggle"; }
 
       // Overview
       Mod+O { toggle-overview; }
@@ -257,9 +291,9 @@
     }
   '';
 
-  # Waybar configuration
+  # Waybar configuration (disabled)
   programs.waybar = {
-    enable = true;
+    enable = false;
     settings = {
       mainBar = {
         layer = "top";
@@ -499,12 +533,9 @@
       }
     '';
   };
-  catppuccin.waybar.enable = true;
-  catppuccin.waybar.mode = "prependImport";
-
-  # Mako notification daemon
+  # Mako notification daemon (disabled)
   services.mako = {
-    enable = true;
+    enable = false;
     settings = {
       border-radius = 0;
       border-size = 2;
@@ -523,23 +554,6 @@
     };
   };
 
-  # Swaylock configuration
-  programs.swaylock = {
-    enable = true;
-    package = pkgs.swaylock-effects;
-    settings = {
-
-      effect-blur = "8x5";
-      fade-in = 0.2;
-      font = "JetBrainsMono Nerd Font";
-      font-size = 24;
-      indicator = true;
-      indicator-radius = 100;
-      indicator-thickness = 7;
-      screenshots = true;
-    };
-  };
-
   # Create Screenshots directory
   home.file."Pictures/Screenshots/.keep".text = "";
 
@@ -553,7 +567,7 @@
 
       case $selected in
         Lock)
-          swaylock
+          dms ipc call lock lock
           ;;
         Logout)
           niri msg action quit
@@ -653,9 +667,6 @@
   '';
 
   # Force overwrite existing config files
-  xdg.configFile."waybar/config".force = true;
-  xdg.configFile."waybar/style.css".force = true;
-  xdg.configFile."mako/config".force = true;
   xdg.configFile."wofi/config".force = true;
   xdg.configFile."wofi/style.css".force = true;
 

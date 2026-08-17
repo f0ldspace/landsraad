@@ -1,22 +1,22 @@
 {
   "nodes": {
-    "catppuccin": {
+    "dms-plugin-registry": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1786309022,
-        "narHash": "sha256-Bn1EFvCd74JZXJs3pxUdfEMhls3/yuJre4O1owI6oe8=",
-        "owner": "catppuccin",
-        "repo": "nix",
-        "rev": "9e84aa294455c58a1caba475902d06c1170ed5c1",
+        "lastModified": 1786969807,
+        "narHash": "sha256-PNqlH9F8+qRI978c8Zimm8eGRUy6bDjpI6wWteYDOhc=",
+        "owner": "AvengeMedia",
+        "repo": "dms-plugin-registry",
+        "rev": "72f5f946e50d427772fee87d3fbcd0e2dfb98db7",
         "type": "github"
       },
       "original": {
-        "owner": "catppuccin",
-        "repo": "nix",
+        "owner": "AvengeMedia",
+        "repo": "dms-plugin-registry",
         "type": "github"
       }
     },
@@ -107,7 +107,7 @@
     },
     "root": {
       "inputs": {
-        "catppuccin": "catppuccin",
+        "dms-plugin-registry": "dms-plugin-registry",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",

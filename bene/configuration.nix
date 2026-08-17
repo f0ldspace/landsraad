@@ -65,6 +65,9 @@
   networking.hostName = "bene"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   system.nixos.label = "landsraad";
+  programs.dms-shell = {
+    enable = true;
+  };
 
   networking.networkmanager.enable = true;
   time.timeZone = "Europe/London";

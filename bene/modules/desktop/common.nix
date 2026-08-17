@@ -29,6 +29,10 @@
     nerd-fonts.jetbrains-mono
     nerd-fonts.iosevka
     nerd-fonts.iosevka-term
+
+    # DMS defaults
+    inter
+    fira-code
   ];
 
   # Shared desktop utilities

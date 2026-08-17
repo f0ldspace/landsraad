@@ -16,11 +16,4 @@
   # This value determines the home-manager release that your
   # configuration is compatible with.
   home.stateVersion = "24.11";
-
-  catppuccin = {
-    enable = true;
-    autoEnable = true;
-    flavor = "mocha";
-    accent = "mauve";
-  };
 }
