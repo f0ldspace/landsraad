@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     #hermes-agent.url = "github:NousResearch/hermes-agent";
     railoxide.url = "github:triamazikamno/railoxide";
     handy.url = "github:cjpais/Handy";
@@ -32,6 +33,7 @@
       self,
       nixpkgs,
       handy,
+      nixpkgs-unstable,
       ...
     }@inputs:
     {
@@ -43,6 +45,10 @@
             pkgs-pinned = import inputs.nixpkgs-pinned {
               system = "x86_64-linux";
               config.allowUnfree = true;
+            };
+            pkgs-unstable = import nixpkgs-unstable {
+              system = "x86_64-linux";
+              config.allowUnfree = true; # if you need CUDA/unfree stuff
             };
           };
           modules = [

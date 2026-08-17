@@ -1,5 +1,6 @@
 {
   config,
+  pkgs-unstable,
   pkgs,
   inputs,
   lib,
@@ -127,15 +128,15 @@
   };
   programs.nix-ld.enable = true;
   programs.firefox.enable = true;
-  services.ollama = {
-    enable = true;
-    package = pkgs.ollama-vulkan;
-    environmentVariables = {
-      OLLAMA_KV_CACHE_TYPE = "q8_0";
-      OLLAMA_KEEP_ALIVE = "30m";
-      OLLAMA_NUM_CTX = "65536";
-    };
-  };
+  #   services.ollama = {
+  #enable = true;
+  #package = pkgs.ollama-vulkan;
+  #environmentVariables = {
+  #  OLLAMA_KV_CACHE_TYPE = "q8_0";
+  #  OLLAMA_KEEP_ALIVE = "30m";
+  #  OLLAMA_NUM_CTX = "65536";
+  #};
+  #};
 
   nixpkgs.config.allowUnfree = true;
   environment.variables.EDITOR = "trinity";
@@ -215,6 +216,7 @@
     })
     mpd-mpris
     picard
+    (pkgs-unstable.llama-cpp.override { vulkanSupport = true; })
     bleachbit
     ffmpegthumbnailer
     satty
