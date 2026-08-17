@@ -241,7 +241,8 @@
       Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run /home/${username}/appimages/helium.AppImage"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+Q { close-window; }
-      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall/" "-e" "opencode" "--agent" "wiki"; }
+      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.llm-wiki/" "-e" "/home/f0ld/.npm-global/bin/pi"; }
+      Mod+Shift+I { spawn "alacritty" "--working-directory" "/home/${username}/.llm-wiki/ingest" "-e" "trinity"; }
       Mod+W { spawn "obsidian"; }
       Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
       Mod+I { spawn "alacritty" "--class" "termweather" "-e" "terminal-rain" "--location" "rochdale,UK"; }
