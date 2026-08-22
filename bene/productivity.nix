@@ -14,5 +14,6 @@
     anki
     obsidian
     calibre
+    spotify
   ];
 }
