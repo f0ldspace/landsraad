@@ -19,6 +19,8 @@
     cargo
     cargo-ui
     nodejs_24
+    gcc
+    gnumake
     rust-analyzer
   ];
 }

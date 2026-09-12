@@ -38,6 +38,9 @@
     ./modules/desktop/gnome.nix
     ./modules/desktop/niri.nix
   ];
+  nixpkgs.config.permittedInsecurePackages = [
+    "immich-2.7.5"
+  ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;

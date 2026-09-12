@@ -27,7 +27,7 @@ in
         --port ''${PORT}
         --jinja -fa on -c 0
       '';
-      ttl = 1800; # unload after 30 min idle
+      ttl = 14400;
     };
   };
 
