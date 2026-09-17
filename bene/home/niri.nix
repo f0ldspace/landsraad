@@ -181,7 +181,7 @@
     window-rule {
       match app-id="vscodium"
       match app-id="zen"
-      open-fullscreen true
+      default-column-width { proportion 1.0; }
     }
 
     window-rule {
