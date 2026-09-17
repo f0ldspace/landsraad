@@ -12,7 +12,7 @@
   environment.systemPackages = with pkgs; [
     gamescope
     prismlauncher
-    osu-lazer
+    osu-lazer-bin
     mangohud
     bolt-launcher
   ];

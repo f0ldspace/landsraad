@@ -178,6 +178,18 @@
       default-column-width { proportion 0.2; }
     }
 
+    window-rule {
+      match app-id="vscodium"
+      match app-id="zen"
+      open-fullscreen true
+    }
+
+    window-rule {
+      match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
+      open-focused false
+      default-floating-position x=10 y=10 relative-to="bottom-right"
+    }
+
 
        // Keybindings
     binds {
