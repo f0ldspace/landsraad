@@ -3,7 +3,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     #hermes-agent.url = "github:NousResearch/hermes-agent";
-    railoxide.url = "github:triamazikamno/railoxide";
+    rust-overlay.url = "github:oxalica/rust-overlay";
+    railoxide = {
+      url = "github:triamazikamno/railoxide";
+      inputs.rust-overlay.follows = "rust-overlay";
+    };
     handy.url = "github:cjpais/Handy";
     handy.inputs.nixpkgs.follows = "nixpkgs";
     #sops-nix.url = "github:Mic92/sops-nix";

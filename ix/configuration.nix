@@ -40,6 +40,7 @@
   ];
   nixpkgs.config.permittedInsecurePackages = [
     "immich-2.7.5"
+    "electron-41.9.1"
   ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;

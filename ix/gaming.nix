@@ -14,6 +14,7 @@
     prismlauncher
     openspeedrun
     mangohud
+    supertuxkart
     protontricks
   ];
 }
