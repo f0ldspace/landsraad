@@ -27,6 +27,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs-pinned.url = "github:NixOS/nixpkgs/fe416aaedd397cacb33a610b33d60ff2b431b127";
+    nix-doom-emacs-unstraightened = {
+      url = "github:marienz/nix-doom-emacs-unstraightened";
+      inputs = {
+        # Our Doom configuration lives in this repo.
+        # ("path:" prefix avoids the git-subdirectory input quirk, NixOS/nix#16388)
+        doomdir.url = "path:./doom.d";
+        # Prune the unused nixpkgs input so we don't pull nixpkgs-unstable.
+        # (Neither the home-manager module nor the overlay uses it.)
+        nixpkgs.follows = "";
+      };
+    };
     nixvim = {
       url = "github:nix-community/nixvim/nixos-26.05";
       # inputs.nixpkgs.follows = "nixpkgs";  # optional but recommended
@@ -70,7 +81,13 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.f0ld = import ./home/f0ld.nix;
+              home-manager.users.f0ld = {
+                imports = [
+                  # Exposes programs.doom-emacs (nix-doom-emacs-unstraightened)
+                  inputs.nix-doom-emacs-unstraightened.homeModule
+                  ./home/f0ld.nix
+                ];
+              };
               home-manager.extraSpecialArgs = {
                 inherit inputs;
                 username = "f0ld";

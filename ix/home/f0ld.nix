@@ -5,6 +5,8 @@
     # Desktop-specific home configs (both loaded)
     ./gnome.nix
     ./niri.nix
+    # Doom Emacs (built via nix-doom-emacs-unstraightened)
+    ./doom.nix
   ];
 
   home.username = "f0ld";
