@@ -29,6 +29,16 @@ in
       '';
       ttl = 14400;
     };
+
+    settings.models."qwen3.8-flash-next" = {
+      cmd = ''
+        ${llamaCpp}/bin/llama-server
+        -m /var/lib/llama-swap/models/Qwen3.8-Flash-Next-UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf
+        --port ''${PORT}
+        --jinja -fa on -c 0
+      '';
+      ttl = 14400;
+    };
   };
 
   # Let the hardened DynamicUser service actually reach the iGPU

@@ -221,6 +221,11 @@
     }
 
     window-rule {
+      match app-id="emacs"
+      default-column-width { proportion 0.3; }
+    }
+
+    window-rule {
       match app-id="obsidian"
       default-column-width { proportion 0.3; }
     }
@@ -238,6 +243,7 @@
       Mod+Shift+T { spawn-sh "/run/current-system/sw/bin/appimage-run /home/${username}/appimages/superProductivity.AppImage"; }
       Mod+N { spawn "dms" "ipc" "call" "notifications" "toggleDoNotDisturb"; }
       Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+      Mod+E { spawn "emacs"; }
       Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run /home/${username}/appimages/helium.AppImage"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+Q { close-window; }
