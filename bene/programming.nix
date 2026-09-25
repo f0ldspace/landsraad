@@ -19,7 +19,9 @@
     cargo
     cargo-ui
     nodejs_24
+    pnpm
     rust-analyzer
     godot_4
+    foundry
   ];
 }
