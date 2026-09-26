@@ -4,7 +4,6 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     #hermes-agent.url = "github:NousResearch/hermes-agent";
     rust-overlay.url = "github:oxalica/rust-overlay";
-    omp.url = "github:can1357/oh-my-pi";
     railoxide = {
       url = "github:triamazikamno/railoxide";
       inputs.rust-overlay.follows = "rust-overlay";

@@ -197,6 +197,8 @@
     wget
     wtype
     texliveFull
+    syncthing
+    syncthingtray
     jq
     rockbox-utility
     mat2
@@ -225,7 +227,6 @@
     bleachbit
     ffmpegthumbnailer
     satty
-    inputs.omp.packages.${pkgs.system}.omp
     gst_all_1.gst-plugins-good
     gst_all_1.gst-plugins-ugly
     waypaper
