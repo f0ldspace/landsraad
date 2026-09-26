@@ -45,7 +45,7 @@
        typescript                 ; javascript, but with static types
        markdown                   ; writing docs for people who don't use doom
        (nix +lsp)                 ; I hereby declare "nix gonna be the future"
-       (org +pretty)              ; organize your plain life in plain text
+       (org +pretty +roam)        ; organize your plain life in plain text
        (python +lsp)              ; beautiful is better than ugly
        (rust +lsp)                ; your lung becomes a blackened lump of coal
        sh                         ; she sells (ba|z|fi)sh shells on the C xor

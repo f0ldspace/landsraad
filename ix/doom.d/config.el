@@ -34,6 +34,46 @@
         org-agenda-start-with-clockreport-mode t
         org-agenda-clockreport-parameter-plist '(:link t :maxlevel 3 :fileskip0 t)))
 
+;; org-roam (via :lang (org +roam)): index all of ~/org (dailies go to
+;; ~/org/daily/). Set before org-roam loads so Doom's module machinery picks
+;; it up. The DB defaults to `user-emacs-directory', which is the read-only
+;; nix store in this setup, so keep it in `doom-data-dir' instead.
+(setq org-roam-directory "~/org/")
+
+(after! org-roam
+  (setq org-roam-db-location (expand-file-name "org-roam.db" doom-data-dir)
+        ;; New nodes as YYYYMMDD-<slug>.org (default adds a full HHMMSS
+        ;; timestamp: %<%Y%m%d%H%M%S>-${slug}.org).
+        org-roam-capture-templates
+        '(("d" "default" plain "%?"
+           :target (file+head "%<%Y%m%d>-${slug}.org"
+                              "#+title: ${title}\n")
+           :unnarrowed t))
+        ;; Node display: Doom's default uses `${doom-hierarchy:*}' (title
+        ;; fills the remaining window width). In narrow windows (tiled WMs,
+        ;; popups) that leftover width goes <= 0 and org-roam marks the WHOLE
+        ;; title invisible, so node-find shows blank-looking rows that still
+        ;; filter correctly. No width suffix on the title = never truncated;
+        ;; type/tags columns are slimmed down (Doom used 12/42) so they fit
+        ;; narrow windows too.
+        org-roam-node-display-template
+        "${doom-hierarchy} ${doom-type:8} ${doom-tags:24}"))
+
+;; org-roam-ui: interactive web UI / graph view for org-roam.
+;; `SPC n r u' starts the server and opens the browser (127.0.0.1:35901).
+(use-package! org-roam-ui
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t        ; follow the Emacs theme
+        org-roam-ui-follow t            ; graph follows the current node
+        org-roam-ui-update-on-save t    ; live-update graph on save
+        org-roam-ui-open-on-start t))   ; open browser when the server starts
+
+(map! :leader
+      (:prefix ("n" . "notes")
+       (:prefix ("r" . "roam")
+        :desc "Open web UI" "u" #'org-roam-ui-mode)))
+
 ;; Confirm exit / quit in one shot instead of y/N full-word prompts.
 (setq confirm-kill-emacs nil)
 
