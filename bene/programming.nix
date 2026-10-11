@@ -18,6 +18,7 @@
     rustc
     cargo
     cargo-ui
+    gcc # linker for rustc
     nodejs_24
     pnpm
     rust-analyzer
