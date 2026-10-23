@@ -13,7 +13,6 @@ in
 {
   environment.systemPackages = with pkgs; [
     vulkan-tools
-    opencode
   ];
 
   services.llama-swap = {

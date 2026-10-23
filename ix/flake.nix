@@ -22,10 +22,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     trinity.url = "path:/home/f0ld/trinity";
-    zen-browser = {
-      url = "github:youwen5/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # zen-browser = {
+    # url = "github:youwen5/zen-browser-flake";
+    # inputs.nixpkgs.follows = "nixpkgs";
+    #};
     nixpkgs-pinned.url = "github:NixOS/nixpkgs/fe416aaedd397cacb33a610b33d60ff2b431b127";
     nix-doom-emacs-unstraightened = {
       url = "github:marienz/nix-doom-emacs-unstraightened";

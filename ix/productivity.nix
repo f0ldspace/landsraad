@@ -16,7 +16,5 @@
     anki
     imagemagick
     glow
-    taskwarrior3
-    taskwarrior-tui
   ];
 }

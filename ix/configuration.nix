@@ -40,7 +40,7 @@
   ];
   nixpkgs.config.permittedInsecurePackages = [
     "immich-2.7.5"
-    "electron-41.9.1"
+    "electron-41.10.7"
   ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.configurationLimit = 10;
@@ -200,7 +200,6 @@
     syncthing
     syncthingtray
     jq
-    rockbox-utility
     mat2
     tor-browser
     pam_u2f
@@ -240,7 +239,7 @@
     signal-desktop
     btop
     cryptomator
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+    #inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     (pkgs.writeShellScriptBin "trinity" ''
       exec ${inputs.trinity.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/nvim "$@"
     '')
