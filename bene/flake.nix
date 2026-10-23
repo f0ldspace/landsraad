@@ -49,11 +49,6 @@
                 username = "deviate";
               };
             }
-            {
-              nixpkgs.overlays = [
-                (import ./overlays/fix-typeguard-sphinx.nix)
-              ];
-            }
           ];
         };
       };

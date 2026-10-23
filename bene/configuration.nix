@@ -161,7 +161,14 @@
     gparted
     satty
     signal-desktop
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+    # TODO: drop the override once zen-browser-flake fixes the 1.23.3b hash
+    # (verified against GitHub's release asset digest).
+    (let zen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}; in
+      zen.default.override {
+        zen-browser-unwrapped = zen.zen-browser-unwrapped.override {
+          hash = "sha256-uyBF0+IWVNQP6EElAJLurf0sH8gx7vtQkiJ3PIvcoUk=";
+        };
+      })
   ];
 
   networking.firewall.enable = true;
