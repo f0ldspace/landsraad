@@ -7,18 +7,19 @@
 {
   environment.systemPackages = with pkgs; [
     neovim
+    rockbox-utility
     tokei
     lazygit
-    opencode-desktop
+    unzip
     git
     bc
     gh
-    vscodium-fhs
     python3
     rustc
     cargo
     cargo-ui
     nodejs_24
+    parted
     gcc
     gnumake
     rust-analyzer

@@ -209,7 +209,10 @@
       match app-id="org.pwmt.zathura"
       default-column-width { proportion 0.4; }
     }
-
+    window-rule {
+      match app-id="chrome-app.hyperliquid.xyz__trade-Default"
+      default-column-width { proportion 1.0; }
+    }
     window-rule {
       match title="OpenSpeedRun"
       default-column-width { proportion 0.2; }
@@ -247,7 +250,7 @@
       Mod+B { spawn-sh "/run/current-system/sw/bin/appimage-run /home/${username}/appimages/helium.AppImage"; }
       Ctrl+Shift+W { spawn "bash" "-c" "~/wofi/launcher.sh"; }
       Mod+Q { close-window; }
-      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall" "-e" "/home/f0ld/.npm-global/bin/pi"; }
+      Mod+Shift+W { spawn "alacritty" "--working-directory" "/home/${username}/org" "-e" "/home/f0ld/.npm-global/bin/pi"; }
       Mod+Shift+I { spawn "alacritty" "--working-directory" "/home/${username}/.local/share/Cryptomator/mnt/wall/wall" "-e" "trinity"; }
       Mod+W { spawn "obsidian"; }
       Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }

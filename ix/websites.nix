@@ -30,6 +30,16 @@ let
       icon = "nix.png";
     }
     {
+      name = "Hyperliquid";
+      url = "https://app.hyperliquid.xyz/trade";
+      icon = "hyperliquid.png";
+    }
+    {
+      name = "Gloom";
+      url = "https://term.gloom.sh/";
+      icon = "gloom.png";
+    }
+    {
       name = "openrouter";
       url = "https://openrouter.ai/chat";
       icon = "openrouter.png";
