@@ -38,6 +38,13 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  # VA-API hardware video decoding via nvidia-vaapi-driver (Zen/Firefox)
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "nvidia";
+    NVD_BACKEND = "direct";
+    MOZ_DISABLE_RDD_SANDBOX = "1";
+  };
+
   # Hybrid graphics - both AMD iGPU and NVIDIA dGPU
   hardware.graphics = {
     enable = true;
@@ -89,6 +96,7 @@
   users.users.${username} = {
     isNormalUser = true;
     description = username;
+    shell = pkgs.zsh;
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -97,6 +105,7 @@
     ];
   };
 
+  programs.zsh.enable = true;
   programs.nix-ld.enable = true;
   programs.firefox.enable = true;
   

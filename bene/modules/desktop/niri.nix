@@ -33,6 +33,13 @@
   # GNOME Keyring for secrets (used by both GNOME and niri)
   services.gnome.gnome-keyring.enable = true;
 
+  # gcr-ssh-agent (part of gnome-keyring) tries to show a confirmation
+  # prompt on SSH auth, but that dialog never renders under niri, so
+  # it hangs forever on every git/ssh operation. Disable it and use a
+  # plain ssh-agent instead; gnome-keyring still handles secrets.
+  services.gnome.gcr-ssh-agent.enable = false;
+  programs.ssh.startAgent = true;
+
   # Environment variables for Wayland compatibility
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";

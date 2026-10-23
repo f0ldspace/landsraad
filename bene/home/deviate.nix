@@ -2,6 +2,8 @@
 
 {
   imports = [
+    ./shell.nix
+
     # Desktop-specific home configs (both loaded)
     ./gnome.nix
     ./niri.nix
