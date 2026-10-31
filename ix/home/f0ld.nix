@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   imports = [
@@ -7,6 +7,8 @@
     ./niri.nix
     # Doom Emacs (built via nix-doom-emacs-unstraightened)
     ./doom.nix
+    # zkapi-clientd user service (packaging flake input)
+    ./zkapi.nix
   ];
 
   home.username = "f0ld";

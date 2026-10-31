@@ -41,6 +41,7 @@
       "node_modules"
       ".local/share/Trash"
       "Downloads"
+      ".local/share/Cryptomator/mnt"
     ];
 
     pruneOpts = [

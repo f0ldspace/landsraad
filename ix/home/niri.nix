@@ -255,7 +255,7 @@
       Mod+W { spawn "obsidian"; }
       Mod+R { spawn "alacritty" "--class" "rmpc" "-e" "rmpc"; }
       Mod+I { spawn "alacritty" "--class" "termweather" "-e" "terminal-rain" "--location" "rochdale,UK"; }
-      Mod+Ctrl+S {spawn "bash" "-c" "handy --toggle-transcription"; }
+      Mod+Ctrl+S { spawn "bash" "-c" "handy --toggle-transcription"; }
       // Vim-style navigation
       Mod+H { focus-column-left; }
       Mod+J { focus-workspace-down; }

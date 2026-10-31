@@ -22,6 +22,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     trinity.url = "path:/home/f0ld/trinity";
+    # zkapi-clientd packaging flake (binary release + user service modules).
+    # Reuse this flake's nixpkgs/home-manager so the lock stays single-pinned.
+    zkapi-clientd = {
+      url = "path:/home/f0ld/zkapi-clientd-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
     # zen-browser = {
     # url = "github:youwen5/zen-browser-flake";
     # inputs.nixpkgs.follows = "nixpkgs";

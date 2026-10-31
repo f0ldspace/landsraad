@@ -66,7 +66,7 @@
 
     # Wallpaper
     awww
-    waypaper
+    # waypaper
 
     # Utilities
     brightnessctl
